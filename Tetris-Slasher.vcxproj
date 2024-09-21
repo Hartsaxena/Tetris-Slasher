@@ -32,6 +32,9 @@
     <ClCompile Include="Render.cpp" />
     <ClCompile Include="Tetris.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\PieceReference.png" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
