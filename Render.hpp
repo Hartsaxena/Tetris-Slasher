@@ -43,6 +43,8 @@ public:
 
     void BlitSurface(Surface* surface, Position position) {};
 
+    
+
 private:
     SDL_Renderer* renderer;
 };

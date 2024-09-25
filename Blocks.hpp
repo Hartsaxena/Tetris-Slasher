@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <type_traits>
 
 enum BlockType {
 	I_BLOCK,
@@ -13,14 +14,14 @@ enum BlockType {
 };
 
 
-/* 
+/*
 *** A 16-bit integer that represents a 4x4 2D matrix. ***
 * Example: the numbers are the indexes of the integer:
 * 0 0 0 0
 * 1 1 1 0
 * 0 1 0 0
 * 0 0 0 0
-* 
+*
 * This matrix represents the rotation of a T-block (Specifically t-block 3)
 * Convert this matrix to binary (from the top left to the bottom right, like you're reading english):
 * 0000 1110 0100 0000
@@ -97,6 +98,7 @@ private:
 class Block {
 public:
 	void rotate() { this->rotationalStates.cycleCurr(); }
+	RotationalState getCurrentState() const { return this->rotationalStates.getCurr(); }
 
 protected:
 	RotationalStateList rotationalStates;
