@@ -30,6 +30,9 @@
     <ClInclude Include="Blocks.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="bag.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -45,6 +48,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Blocks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bag.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
