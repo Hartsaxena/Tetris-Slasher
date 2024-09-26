@@ -1,5 +1,6 @@
 #pragma once
 #include "Blocks.hpp"
+#include "Render.hpp"
 #include <SDL.h>
 
 const int WINDOW_WIDTH = 640;
@@ -40,35 +41,31 @@ private:
 
 class TetrisGrid {
 public:
-    TetrisGrid();
+    TetrisGrid(Canvas* renderCanvas) { this->renderCanvas = renderCanvas; }
     ~TetrisGrid();
 
-    void displayGrid(); // this displays the grid
-
-    // Pointer to the current moving piece
-    Block* curr;
-    int currX, currY; // Representing top left of piece
-
-    bool getGridCell(int row, int col) const { return this->grid[row][col]; }
-
+    void render();
 
 private:
     const int xDimension = 10;
     const int yDimension = 20;
-
     // 2D array of booleans, representing whether a cell is filled with a block or not
     bool grid[10][20]; // Dimensions: 10(x) by 20(y)
+    // Pointer to the current moving piece
+    Block* curr;
+    int currX, currY; // Representing top left of piece
+    Canvas* renderCanvas;
 
-   
+
+    bool getGridCell(int row, int col) const { return this->grid[row][col]; }
     bool checkCollision();
     bool checkWallCollision(int pieceX, int pieceY) const;
 
+    void renderGrid();
+    void renderBlock(Block* block, int currX, int currY);
 
     void processEvents();
     void update();
-    void render();
-    void renderGrid();
-    void renderBlock(Block* block, int currX, int currY);
 };
 
 

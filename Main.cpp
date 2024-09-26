@@ -9,6 +9,7 @@ Driver file.
 #include "Front.hpp"
 #include "Render.hpp"
 #include "Colors.hpp"
+#include "Tetris.hpp"
 
 
 int main(int argc, char* argv[])
@@ -19,10 +20,7 @@ int main(int argc, char* argv[])
     Canvas gameRenderer(front.renderer);
 
     // Initializing Game Variables
-
-    // Testing Variables
-    Rectangle testRectangle = { 100, 100, 33, 33, RED };
-
+    TetrisGrid grid = (&gameRenderer);
 
     std::cout<<"Finished Loading! Starting Game Loop\n\n"; // Separate game errors from initializing errors.
 
@@ -35,27 +33,12 @@ int main(int argc, char* argv[])
 
         // Update code here
 
-        /*
-        Some filler movement code for a rectangle.
-        This isn't meant for the final game, just for testing the input manager.
-        */
-        int cubeSpeed = 3;
-        if (input.getKeyState(SDL_SCANCODE_W))
-            testRectangle.rect.y -= cubeSpeed;
-        if (input.getKeyState(SDL_SCANCODE_S))
-            testRectangle.rect.y += cubeSpeed;
-        if (input.getKeyState(SDL_SCANCODE_A))
-            testRectangle.rect.x -= cubeSpeed;
-        if (input.getKeyState(SDL_SCANCODE_D))
-            testRectangle.rect.x += cubeSpeed;
-        
-        // Boundary Checking
-        testRectangle.snap(front.getScreenX(), front.getScreenY());
+        // Inputs
 
         // Rendering Code Here
         gameRenderer.BlankScreen();
 
-        gameRenderer.DrawRect(&testRectangle);
+        grid.render();
 
         front.PresentRenderer();
         front.PauseDelay();

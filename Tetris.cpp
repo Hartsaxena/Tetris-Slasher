@@ -81,19 +81,6 @@ bool TetrisGrid::checkWallCollision(int pieceX, int pieceY) const {
 
 
 TetrisGrid::~TetrisGrid() {
-	SDL_DestroyRenderer("insert renderer");
-	SDL_DestroyWindow("insert window");
-	SDL_Quit();
-}
-
-void TetrisGrid::displayGrid() {
-	bool running = true;
-	while (running) {
-		processEvents();
-		update();
-		render();
-		SDL_Delay(100); // frame rate
-	}
 }
 
 void TetrisGrid::processEvents() {
@@ -110,33 +97,28 @@ void TetrisGrid::update() {
 }
 
 void TetrisGrid::render() {
-	SDL_SetRenderDrawColor("insert renderer", 0, 0, 0, 255); // Black background
-	SDL_RenderClear("insert renderer");
-
 	renderGrid(); // Render the grid
 	renderBlock(curr, currX, currY); // Render the current block
-
-	SDL_RenderPresent("insert renderer");
 }
 
 void TetrisGrid::renderGrid() {
-	SDL_SetRenderDrawColor("insert renderer", 255, 255, 255, 255); // White grid lines
+	// White Grid Lines?
 
 	for (int x = 0; x < GRID_WIDTH; ++x) {
 		for (int y = 0; y < GRID_HEIGHT; ++y) {
-			SDL_Rect cell;
+			Rectangle cell;
 			cell.x = x * CELL_SIZE;
 			cell.y = y * CELL_SIZE;
 			cell.w = CELL_SIZE;
 			cell.h = CELL_SIZE;
 
-			if (getGridCell(x, y)) {
-				SDL_SetRenderDrawColor("insert renderer", 255, 0, 0, 255); // Red for filled cells
-				SDL_RenderFillRect("insert renderer", &cell);
+			if (getGridCell(y, x)) {
+				cell.color = { 255, 0, 0, 255 };
 			}
-
-			SDL_SetRenderDrawColor("insert renderer", 255, 255, 255, 255); // White grid lines
-			SDL_RenderDrawRect("insert renderer", &cell);
+			else {
+				cell.color = { 255, 255, 255, 255 };
+			}
+			this->renderCanvas->DrawRect(&cell);
 		}
 	}
 }
@@ -147,14 +129,14 @@ void TetrisGrid::renderBlock(Block* block, int currX, int currY) {
 	for (int y = 0; y < 4; ++y) {
 		for (int x = 0; x < 4; ++x) {
 			if (RotationalStates::getCell(pieceState, y, x)) {
-				SDL_Rect cell;
+				Rectangle cell;
 				cell.x = (currX + x) * CELL_SIZE;
 				cell.y = (currY + y) * CELL_SIZE;
 				cell.w = CELL_SIZE;
 				cell.h = CELL_SIZE;
+				cell.color = { 0, 255, 0, 255 };
 
-				SDL_SetRenderDrawColor("insert renderer", 0, 255, 0, 255); // Green for active block
-				SDL_RenderFillRect("insert renderer", &cell);
+				this->renderCanvas->DrawRect(&cell);
 			}
 		}
 	}
