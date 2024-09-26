@@ -22,6 +22,8 @@ public:
     // Get the next piece from the queue
     Block* getNextBlock();
 
+    void pullFromQueue(std::queue<Block*>& initialQueue);
+
 private:
     std::queue<Block*> BlockQueue;
     Block* heldBlock;

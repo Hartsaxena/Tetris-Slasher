@@ -34,3 +34,11 @@ Block* Bag::getNextBlock() {
     BlockQueue.pop();
     return nextBlock;
 }
+
+void Bag::pullFromQueue(std::queue<Block*>& initialQueue) {
+    if (!initialQueue.empty()) {
+        Block* pulledBlock = initialQueue.front();
+        initialQueue.pop();
+        BlockQueue.push(pulledBlock);
+    }
+}
