@@ -1,36 +1,36 @@
 #include "bag.hpp"
 #include <iostream>
 
-Bag::Bag() : heldPiece(nullptr), isPieceHeld(false) {}
+Bag::Bag() : heldBlock(nullptr), isBlockHeld(false) {}
 
-Block* Bag::holdPiece(Block* currentPiece) {
-    Block* previousHeldPiece = nullptr;
+Block* Bag::holdBlock(Block* currentBlock) {
+    Block* previousHeldBlock = nullptr;
 
-    if (isPieceHeld) {
-        previousHeldPiece = heldPiece;
+    if (isBlockHeld) {
+        previousHeldBlock = heldBlock;
     }
 
-    heldPiece = currentPiece;
-    isPieceHeld = true;
+    heldBlock = currentBlock;
+    isBlockHeld = true;
 
-    return previousHeldPiece;
+    return previousHeldBlock;
 }
 
-bool Bag::hasHeldPiece() const {
-    return isPieceHeld;
+bool Bag::hasHeldBlock() const {
+    return isBlockHeld;
 }
 
-Block* Bag::getHeldPiece() const {
-    return heldPiece;
+Block* Bag::getHeldBlock() const {
+    return heldBlock;
 }
 
-Block* Bag::getNextPiece() {
-    if (pieceQueue.empty()) {
+Block* Bag::getNextBlock() {
+    if (BlockQueue.empty()) {
         // If the queue is empty do something idk
         return nullptr;
     }
 
-    Block* nextPiece = pieceQueue.front();
-    pieceQueue.pop();
-    return nextPiece;
+    Block* nextBlock = BlockQueue.front();
+    BlockQueue.pop();
+    return nextBlock;
 }

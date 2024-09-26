@@ -11,21 +11,21 @@ public:
     Bag();
 
     // Hold the current piece and return the previously held piece
-    Block* holdPiece(Block* currentPiece);
+    Block* holdBlock(Block* currentBlock);
 
     // Check if there is a piece currently held
-    bool hasHeldPiece() const;
+    bool hasHeldBlock() const;
 
     // Retrieve the currently held piece
-    Block* getHeldPiece() const;
+    Block* getHeldBlock() const;
 
     // Get the next piece from the queue
-    Block* getNextPiece();
+    Block* getNextBlock();
 
 private:
-    std::queue<Block*> pieceQueue;
-    Block* heldPiece;
-    bool isPieceHeld;
+    std::queue<Block*> BlockQueue;
+    Block* heldBlock;
+    bool isBlockHeld;
 };
 
 #endif
