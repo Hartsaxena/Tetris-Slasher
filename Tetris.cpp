@@ -44,119 +44,147 @@ Block BlockQueue::dequeue() {
 }
 
 
-/*
-Returns true if there is collision between the current piece and the grid.
-*/
-bool TetrisGrid::checkCollision() {
-	RotationalState pieceState = this->curr->getCurrentState();
-	for (int y = 3; y >= 0; y--) {    // Row
-		for (int x = 0; x < 4; x++) { // Column
-			bool val = RotationalStates::getCell(pieceState, y, x);
-			if (val == 0) {
-				continue;
-			}
-
-			int gridRelativeX = this->currX + x;
-			int gridRelativeY = this->currY + y;
-
-			//// NOTE: I'm not sure if checking collision with the sides of the grid should be in this method.
-			//// Check collision with sides of grid
-			//(this->checkWallCollision(gridRelativeX, gridRelativeY)) {
-			//	return true;
-			//}
-
-			// Check collision with other grid cells
-			if (this->getGridCell(y, x)) {
-				return true;
-			}
-		}
-	}
-
-	return false;
+TetrisGrid::TetrisGrid(SDL_Renderer* renderer) : renderer(renderer), gameOver(false) {
+    // Initialize the grid to 0 (empty)
+    for (int y = 0; y < GRID_HEIGHT; y++) {
+        for (int x = 0; x < GRID_WIDTH; x++) {
+            grid[y][x] = 0; // 0 means empty
+        }
+    }
+    GeneratePiece();
 }
-
-bool TetrisGrid::checkWallCollision(int pieceX, int pieceY) const {
-	return (pieceX < 0 || pieceX >= this->xDimension);
-}
-
 
 TetrisGrid::~TetrisGrid() {
-	SDL_DestroyRenderer("insert renderer");
-	SDL_DestroyWindow("insert window");
-	SDL_Quit();
+    delete currentPiece; // Clean up the current piece
 }
 
-void TetrisGrid::displayGrid() {
-	bool running = true;
-	while (running) {
-		processEvents();
-		update();
-		render();
-		SDL_Delay(100); // frame rate
-	}
+void TetrisGrid::GeneratePiece() {
+    int randomBlockType = rand() % 7; // Randomly select a block type
+    switch (randomBlockType) {
+    case I_BLOCK: currentPiece = new IBlock(); break;
+    case O_BLOCK: currentPiece = new OBlock(); break;
+    case S_BLOCK: currentPiece = new SBlock(); break;
+    case Z_BLOCK: currentPiece = new ZBlock(); break;
+    case L_BLOCK: currentPiece = new LBlock(); break;
+    case T_BLOCK: currentPiece = new TBlock(); break;
+    case J_BLOCK: currentPiece = new JBlock(); break;
+    }
+    currentPieceState = currentPiece->getCurrentState();
+    piecePosition = { 4, 0 }; // top of piece grid
+    if (CheckCollision(0, 0, currentPieceState)) {
+        gameOver = true; // Game over if the new piece cannot be placed
+    }
 }
 
-void TetrisGrid::processEvents() {
-	SDL_Event event;
-	while (SDL_PollEvent(&event)) {
-		if (event.type == SDL_QUIT) {
-			exit(0);
-		}
-	}
+bool TetrisGrid::MovePiece(int dx, int dy) {
+    if (!CheckCollision(dx, dy, currentPieceState)) {
+        piecePosition.x += dx;
+        piecePosition.y += dy;
+        return true;
+    }
+    return false;
 }
 
-void TetrisGrid::update() {
-	// this is for like block movement and ig the queue
+bool TetrisGrid::RotatePiece() {
+    RotationalState newState = currentPieceState; // Create a copy of the current state
+    // Attempt to rotate the piece
+    // how the hell do i do rotation with these stupid numbers
+
+    if (!CheckCollision(0, 0, newState)) {
+        currentPieceState = newState;
+        return true;
+    }
+    return false;
 }
 
-void TetrisGrid::render() {
-	SDL_SetRenderDrawColor("insert renderer", 0, 0, 0, 255); // Black background
-	SDL_RenderClear("insert renderer");
-
-	renderGrid(); // Render the grid
-	renderBlock(curr, currX, currY); // Render the current block
-
-	SDL_RenderPresent("insert renderer");
+bool TetrisGrid::CheckCollision(int dx, int dy, const RotationalState& state) {
+    for (int row = 0; row < 4; row++) {
+        for (int col = 0; col < 4; col++) {
+            if (RotationalStates::getCell(state, row, col)) {
+                int x = piecePosition.x + col + dx;
+                int y = piecePosition.y + row + dy;
+                if (x < 0 || x >= GRID_WIDTH || y >= GRID_HEIGHT || (y >= 0 && grid[y][x] != 0)) {
+                    return true; // collide
+                }
+            }
+        }
+    }
+    return false; // noo collide
 }
 
-void TetrisGrid::renderGrid() {
-	SDL_SetRenderDrawColor("insert renderer", 255, 255, 255, 255); // White grid lines
-
-	for (int x = 0; x < GRID_WIDTH; ++x) {
-		for (int y = 0; y < GRID_HEIGHT; ++y) {
-			SDL_Rect cell;
-			cell.x = x * CELL_SIZE;
-			cell.y = y * CELL_SIZE;
-			cell.w = CELL_SIZE;
-			cell.h = CELL_SIZE;
-
-			if (getGridCell(x, y)) {
-				SDL_SetRenderDrawColor("insert renderer", 255, 0, 0, 255); // Red for filled cells
-				SDL_RenderFillRect("insert renderer", &cell);
-			}
-
-			SDL_SetRenderDrawColor("insert renderer", 255, 255, 255, 255); // White grid lines
-			SDL_RenderDrawRect("insert renderer", &cell);
-		}
-	}
+void TetrisGrid::PlacePiece() {
+    for (int row = 0; row < 4; row++) {
+        for (int col = 0; col < 4; col++) {
+            if (RotationalStates::getCell(currentPieceState, row, col)) {
+                grid[piecePosition.y + row][piecePosition.x + col] = 1; // Mark the grid as filled
+            }
+        }
+    }
+    ClearLines(); // clears full filled line on grid
+    GeneratePiece(); // gives new piece when placed
 }
 
-void TetrisGrid::renderBlock(Block* block, int currX, int currY) {
-	RotationalState pieceState = block->getCurrentState();
-
-	for (int y = 0; y < 4; ++y) {
-		for (int x = 0; x < 4; ++x) {
-			if (RotationalStates::getCell(pieceState, y, x)) {
-				SDL_Rect cell;
-				cell.x = (currX + x) * CELL_SIZE;
-				cell.y = (currY + y) * CELL_SIZE;
-				cell.w = CELL_SIZE;
-				cell.h = CELL_SIZE;
-
-				SDL_SetRenderDrawColor("insert renderer", 0, 255, 0, 255); // Green for active block
-				SDL_RenderFillRect("insert renderer", &cell);
-			}
-		}
-	}
+void TetrisGrid::ClearLines() {
+    for (int y = 0; y < GRID_HEIGHT; y++) {
+        bool lineFilled = true;
+        for (int x = 0; x < GRID_WIDTH; x++) {
+            if (grid[y][x] == 0) {
+                lineFilled = false;
+                break;
+            }
+        }
+        if (lineFilled) {
+            // Clear the line
+            for (int row = y; row > 0; row--) {
+                for (int col = 0; col < GRID_WIDTH; col++) {
+                    grid[row][col] = grid[row - 1][col]; // Move down
+                }
+            }
+            // Clear the top line
+            for (int col = 0; col < GRID_WIDTH; col++) {
+                grid[0][col] = 0;
+            }
+        }
+    }
 }
 
+bool TetrisGrid::isGameOver() {
+    return gameOver;
+}
+
+void TetrisGrid::Update() {
+    if (!isGameOver()) {
+        // Move piece down automatically
+        if (!MovePiece(0, 1)) {
+            PlacePiece(); // Place piece if it cannot move down
+        }
+    }
+    else {
+        std::cout << "Game Over!" << std::endl;
+    }
+}
+
+void TetrisGrid::Render() {
+    // Draw the grid
+    for (int y = 0; y < GRID_HEIGHT; y++) {
+        for (int x = 0; x < GRID_WIDTH; x++) {
+            if (grid[y][x] != 0) { // If not empty
+                Rectangle rect = { x * 30, y * 30, 30, 30, Color{255, 0, 0, 255} }; // Example color for filled for now
+                canvas->DrawRect(&rect);
+            }
+        }
+    }
+
+    // Render the current piece
+    for (int row = 0; row < 4; row++) {
+        for (int col = 0; col < 4; col++) {
+            if (RotationalStates::getCell(currentPieceState, row, col)) {
+                Rectangle rect = { (piecePosition.x + col) * 30, (piecePosition.y + row) * 30, 30, 30, Color{0, 255, 0, 255} }; // Example color for now
+                canvas->DrawRect(&rect);
+            }
+        }
+    }
+
+    // renderer
+    SDL_RenderPresent(renderer);
+}

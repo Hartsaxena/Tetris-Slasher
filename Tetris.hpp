@@ -1,12 +1,41 @@
-#pragma once
-#include "Blocks.hpp"
+#include <iostream>
 #include <SDL.h>
+#include <vector>
+#include <ctime>
+#include <cstdlib>
+#include "Blocks.hpp"
+#include "Render.hpp"
+#include "Colors.hpp"
 
-const int WINDOW_WIDTH = 640;
-const int WINDOW_HEIGHT = 640;
-const int CELL_SIZE = 32; // Each grid cell will be 32x32 pixels
 const int GRID_WIDTH = 10;
 const int GRID_HEIGHT = 20;
+
+class TetrisGrid {
+public:
+    TetrisGrid(SDL_Renderer* renderer);
+    TetrisGrid(Canvas* canvas);
+    ~TetrisGrid();
+    void Update();
+    void Render();
+    void ClearLines();
+    void GeneratePiece();
+    bool MovePiece(int dx, int dy);
+    bool RotatePiece();
+    bool CheckCollision(int dx, int dy, const RotationalState& state);
+    void PlacePiece();
+    bool isGameOver();
+
+private:
+    Canvas* canvas;
+    SDL_Renderer* renderer;
+    Block* currentPiece; // Current falling piece
+    RotationalState currentPieceState;
+    int grid[GRID_HEIGHT][GRID_WIDTH]; // Tetris grid
+    Position piecePosition; // Current position of the piece
+    bool gameOver;
+};
+
+
 
 
 typedef struct BlockQueueNode {
@@ -18,58 +47,19 @@ typedef struct BlockQueueNode {
 
 class BlockQueue {
 public:
-	template<typename... Blocks>
-	BlockQueue(Blocks... blockData) {
-		static_assert((std::is_same_v<Blocks, Block> && ...), "All entries in BlockQueue must be of type Block\n");
-		(this->enqueue(Blocks), ...);
-	}
-	~BlockQueue();
+    template<typename... Blocks>
+    BlockQueue(Blocks... blockData) {
+        static_assert((std::is_same_v<Blocks, Block> && ...), "All entries in BlockQueue must be of type Block\n");
+        (this->enqueue(Blocks), ...);
+    }
+    ~BlockQueue();
 
-	void enqueue(Block);
-	Block dequeue();
-	int getLength() const { return this->length; }
-
-private:
-	BlockQueueNode* first = nullptr;
-	BlockQueueNode* last = nullptr;
-	int length = 0;
-};
-
-
-
-
-class TetrisGrid {
-public:
-    TetrisGrid();
-    ~TetrisGrid();
-
-    void displayGrid(); // this displays the grid
-
-    // Pointer to the current moving piece
-    Block* curr;
-    int currX, currY; // Representing top left of piece
-
-    bool getGridCell(int row, int col) const { return this->grid[row][col]; }
-
+    void enqueue(Block);
+    Block dequeue();
+    int getLength() const { return this->length; }
 
 private:
-    const int xDimension = 10;
-    const int yDimension = 20;
-
-    // 2D array of booleans, representing whether a cell is filled with a block or not
-    bool grid[10][20]; // Dimensions: 10(x) by 20(y)
-
-   
-    bool checkCollision();
-    bool checkWallCollision(int pieceX, int pieceY) const;
-
-
-    void processEvents();
-    void update();
-    void render();
-    void renderGrid();
-    void renderBlock(Block* block, int currX, int currY);
+    BlockQueueNode* first = nullptr;
+    BlockQueueNode* last = nullptr;
+    int length = 0;
 };
-
-
-

@@ -171,3 +171,4 @@ private:
 		RotationalStates::JBlock4
 	);
 };
+
