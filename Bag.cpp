@@ -26,7 +26,6 @@ Block* Bag::getHeldBlock() const {
 
 Block* Bag::getNextBlock() {
     if (BlockQueue.empty()) {
-        // If the queue is empty do something idk
         return nullptr;
     }
 
@@ -37,8 +36,16 @@ Block* Bag::getNextBlock() {
 
 void Bag::pullFromQueue(std::queue<Block*>& initialQueue) {
     if (!initialQueue.empty()) {
-        Block* pulledBlock = initialQueue.front();
-        initialQueue.pop();
-        BlockQueue.push(pulledBlock);
+        Block* pulledBlock = initialQueue.front(); // Grab the Block from the Queue
+        initialQueue.pop(); // Remove the Block
+        BlockQueue.push(pulledBlock); // Add the Block
+    }
+}
+
+void Bag::AddToQueue(std::queue<Block*>& initialQueue) {
+    if (!initialQueue.empty()) {
+        Block* pulledBlock = BlockQueue.front();
+        BlockQueue.pop();
+        initialQueue.push(pulledBlock);
     }
 }

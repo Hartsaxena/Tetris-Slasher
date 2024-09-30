@@ -10,19 +10,22 @@ public:
     // Constructor
     Bag();
 
-    // Hold the current piece and return the previously held piece
+    // Hold the current block and return the previously held block
     Block* holdBlock(Block* currentBlock);
 
-    // Check if there is a piece currently held
+    // Check if there is a block currently held
     bool hasHeldBlock() const;
 
-    // Retrieve the currently held piece
+    // Retrieve the currently held block
     Block* getHeldBlock() const;
 
-    // Get the next piece from the queue
+    // Get the next block from the queue
     Block* getNextBlock();
 
+    // pull a Block from the initial Queue to store
     void pullFromQueue(std::queue<Block*>& initialQueue);
+
+    void AddToQueue(std::queue<Block*>& initialQueue);
 
 private:
     std::queue<Block*> BlockQueue;
