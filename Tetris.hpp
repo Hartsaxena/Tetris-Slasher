@@ -21,14 +21,14 @@ public:
     void GeneratePiece();
     bool MovePiece(int dx, int dy);
     bool RotatePiece();
-    bool CheckCollision(int dx, int dy, const RotationalState& state);
+    bool CheckCollision(int dx, int dy, const RotationalState& state) const;
     void PlacePiece();
-    bool isGameOver();
+    bool isGameOver() const;
 
 private:
     Canvas* canvas;
     SDL_Renderer* renderer;
-    Block* currentPiece; // Current falling piece
+    Block* currentPiece;
     RotationalState currentPieceState;
     int grid[GRID_HEIGHT][GRID_WIDTH]; // Tetris grid
     Position piecePosition; // Current position of the piece

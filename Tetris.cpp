@@ -69,6 +69,7 @@ void TetrisGrid::GeneratePiece() {
     case T_BLOCK: currentPiece = new TBlock(); break;
     case J_BLOCK: currentPiece = new JBlock(); break;
     }
+
     currentPieceState = currentPiece->getCurrentState();
     piecePosition = { 4, 0 }; // top of piece grid
     if (CheckCollision(0, 0, currentPieceState)) {
@@ -97,7 +98,7 @@ bool TetrisGrid::RotatePiece() {
     return false;
 }
 
-bool TetrisGrid::CheckCollision(int dx, int dy, const RotationalState& state) {
+bool TetrisGrid::CheckCollision(int dx, int dy, const RotationalState& state) const {
     for (int row = 0; row < 4; row++) {
         for (int col = 0; col < 4; col++) {
             if (RotationalStates::getCell(state, row, col)) {
@@ -148,7 +149,7 @@ void TetrisGrid::ClearLines() {
     }
 }
 
-bool TetrisGrid::isGameOver() {
+bool TetrisGrid::isGameOver() const {
     return gameOver;
 }
 
