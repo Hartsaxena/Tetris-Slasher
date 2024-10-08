@@ -21,7 +21,7 @@ void BlockQueue::enqueue(Block val) {
 		return;
 	}
 
-	BlockQueueNode* newLast = new BlockQueueNode(n);
+	BlockQueueNode* newLast = new BlockQueueNode(val);
 	this->last->next = newLast;
 	this->last = newLast;
 	this->length++;

@@ -28,7 +28,7 @@ public:
     void AddToQueue(std::queue<Block*>& initialQueue);
 
 private:
-    std::queue<Block*> BlockQueue;
+    std::queue<Block*> SavedQueue;
     Block* heldBlock;
     bool isBlockHeld;
 };

@@ -25,12 +25,12 @@ Block* Bag::getHeldBlock() const {
 }
 
 Block* Bag::getNextBlock() {
-    if (BlockQueue.empty()) {
+    if (SavedQueue.empty()) {
         return nullptr;
     }
 
-    Block* nextBlock = BlockQueue.front();
-    BlockQueue.pop();
+    Block* nextBlock = SavedQueue.front();
+    SavedQueue.pop();
     return nextBlock;
 }
 
@@ -38,14 +38,14 @@ void Bag::pullFromQueue(std::queue<Block*>& initialQueue) {
     if (!initialQueue.empty()) {
         Block* pulledBlock = initialQueue.front(); // Grab the Block from the Queue
         initialQueue.pop(); // Remove the Block
-        BlockQueue.push(pulledBlock); // Add the Block
+        SavedQueue.push(pulledBlock); // Add the Block
     }
 }
 
 void Bag::AddToQueue(std::queue<Block*>& initialQueue) {
     if (!initialQueue.empty()) {
-        Block* pulledBlock = BlockQueue.front();
-        BlockQueue.pop();
+        Block* pulledBlock = SavedQueue.front();
+        SavedQueue.pop();
         initialQueue.push(pulledBlock);
     }
 }
