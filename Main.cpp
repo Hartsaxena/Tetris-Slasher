@@ -13,8 +13,8 @@ int main(int argc, char* argv[]) {
     srand(static_cast<unsigned int>(time(0))); // Seed for random number generation
 
     FrontendManager frontend(800, 600, 60, "Tetris Game");
-    TetrisGrid tetrisGrid(frontend.renderer);
-    Canvas canvas(frontend.renderer);
+    Canvas canvas = Canvas(frontend.renderer);
+    TetrisGrid grid(&canvas);
     bool isRunning = true;
     SDL_Event event;
 
@@ -30,20 +30,20 @@ int main(int argc, char* argv[]) {
         const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL); // Get current state of the keyboard
 
         if (currentKeyStates[SDL_SCANCODE_A]) {
-            tetrisGrid.movePiece(-1, 0); // Move left
+            grid.movePiece(-1, 0); // Move left
         }
         if (currentKeyStates[SDL_SCANCODE_D]) {
-            tetrisGrid.movePiece(1, 0); // Move right
+            grid.movePiece(1, 0); // Move right
         }
         if (currentKeyStates[SDL_SCANCODE_S]) {
-            tetrisGrid.movePiece(0, 1); // Move down
+            grid.movePiece(0, 1); // Move down
         }
         if (currentKeyStates[SDL_SCANCODE_W]) {
             // tetrisGrid.rotatePiece(); // Rotate
         }
 
-        tetrisGrid.update();
-        tetrisGrid.render();
+        grid.update();
+        grid.render();
         SDL_Delay(100); // Control game speed
     }
 

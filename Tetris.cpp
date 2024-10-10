@@ -44,7 +44,8 @@ Block BlockQueue::dequeue() {
 }
 
 
-TetrisGrid::TetrisGrid(SDL_Renderer* renderer) : renderer(renderer), gameOver(false) {
+TetrisGrid::TetrisGrid(Canvas* canvas) {
+    this->canvas = canvas;
     // Initialize the grid to 0 (empty)
     for (int y = 0; y < GRID_HEIGHT; y++) {
         for (int x = 0; x < GRID_WIDTH; x++) {

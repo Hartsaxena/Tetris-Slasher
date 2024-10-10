@@ -23,7 +23,6 @@ typedef struct Position {
 
 
 // Class Declarations
-class Canvas;
 class Surface;
 
 class Canvas

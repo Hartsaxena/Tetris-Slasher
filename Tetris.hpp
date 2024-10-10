@@ -12,7 +12,6 @@ const int GRID_HEIGHT = 20;
 
 class TetrisGrid {
 public:
-    TetrisGrid(SDL_Renderer* renderer);
     TetrisGrid(Canvas* canvas);
     ~TetrisGrid();
     void update();
@@ -36,7 +35,7 @@ private:
     Position piecePosition; // Current position of the piece
     int& currX = piecePosition.x;
     int& currY = piecePosition.y;
-    bool gameOver;
+    bool gameOver = false;
 };
 
 
@@ -56,6 +55,7 @@ public:
 		static_assert((std::is_same_v<Blocks, Block> && ...), "All entries in BlockQueue must be of type Block\n");
 		(this->enqueue(Blocks), ...);
 	}
+    ~BlockQueue();
 
     ~BlockQueue();
     void enqueue(Block);

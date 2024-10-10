@@ -43,7 +43,7 @@ void Canvas::BlankScreen() const
 void Canvas::DrawRect(Rectangle* rect) const
 {
     Color color = rect->color;
-    SDL_RenderDrawRect(renderer, &rect->rect);
+    SDL_RenderDrawRect(renderer, &(rect->rect));
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.alpha);
-    SDL_RenderFillRect(renderer, &rect->rect);
+    SDL_RenderFillRect(renderer, &(rect->rect));
 }
