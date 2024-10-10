@@ -26,7 +26,8 @@ enum BlockType {
 * Convert this matrix to binary (from the top left to the bottom right, like you're reading english):
 * 0000 1110 0100 0000
 * Convert binary to decimal: 3648
-*/
+*/	
+
 typedef uint16_t RotationalState;
 namespace RotationalStates {
 	bool getCell(RotationalState state, int row, int col);
@@ -80,9 +81,9 @@ class RotationalStateList {
 public:
 	template<typename... States>
 	RotationalStateList(States... rotationalStates) {
-		static_assert((std::is_same_v<States, RotationalState> && ...),
-			"All entries in RotationStateList must be of type RotationalState\n");
-		(this->push(States), ...);
+		static_assert((std::is_same_v<States, RotationalState> && ...), "All entries in RotationStateList must be of type RotationalState\n");
+		(this->push(rotationalStates), ...);
+		
 	}
 
 	void push(RotationalState rotationalState);
@@ -105,7 +106,7 @@ protected:
 };
 
 class IBlock : public Block {
-private:
+public:
 	RotationalStateList rotationalStates = RotationalStateList(
 		RotationalStates::IBlock1,
 		RotationalStates::IBlock2,
@@ -115,14 +116,17 @@ private:
 };
 
 class OBlock : public Block {
-private:
+public:
 	RotationalStateList rotationalStates = RotationalStateList(
-		RotationalStates::OBlock1
+		RotationalStates::OBlock1,	
+		RotationalStates::OBlock2,
+		RotationalStates::OBlock3,
+		RotationalStates::OBlock4
 	);
 };
 
 class SBlock : public Block {
-private:
+public:
 	RotationalStateList rotationalStates = RotationalStateList(
 		RotationalStates::SBlock1,
 		RotationalStates::SBlock2,
@@ -133,7 +137,7 @@ private:
 };
 
 class ZBlock : public Block {
-private:
+public:
 	RotationalStateList rotationalStates = RotationalStateList(
 		RotationalStates::ZBlock1,
 		RotationalStates::ZBlock2,
@@ -143,7 +147,7 @@ private:
 };
 
 class LBlock : public Block {
-private:
+public:
 	RotationalStateList rotationalStates = RotationalStateList(
 		RotationalStates::LBlock1,
 		RotationalStates::LBlock2,
@@ -153,7 +157,7 @@ private:
 };
 
 class TBlock : public Block {
-private:
+public:
 	RotationalStateList rotationalStates = RotationalStateList(
 		RotationalStates::TBlock1,
 		RotationalStates::TBlock2,
@@ -163,7 +167,7 @@ private:
 };
 
 class JBlock : public Block {
-private:
+public:
 	RotationalStateList rotationalStates = RotationalStateList(
 		RotationalStates::JBlock1,
 		RotationalStates::JBlock2,

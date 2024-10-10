@@ -3,7 +3,7 @@
 #include "Blocks.hpp"
 #include "Front.hpp"
 #include "Render.hpp"
-
+#include "Colors.hpp"
 
 BlockQueue::~BlockQueue() {
 	BlockQueueNode* curr = first;
@@ -26,7 +26,7 @@ void BlockQueue::enqueue(Block val) {
 	BlockQueueNode* newLast = new BlockQueueNode(val);
 	this->last->next = newLast;
 	this->last = newLast;
-	this->length++;
+	this->length++; 
 }
 
 Block BlockQueue::dequeue() {
@@ -59,7 +59,7 @@ TetrisGrid::~TetrisGrid() {
 }
 
 void TetrisGrid::GeneratePiece() {
-    int randomBlockType = rand() % 7; // Randomly select a block type
+    int randomBlockType = rand() % 7; // Randomly select a block type, untill bag is implemented 
     switch (randomBlockType) {
     case I_BLOCK: currentPiece = new IBlock(); break;
     case O_BLOCK: currentPiece = new OBlock(); break;
@@ -89,6 +89,7 @@ bool TetrisGrid::RotatePiece() {
     RotationalState newState = currentPieceState; // Create a copy of the current state
     // Attempt to rotate the piece
     // how the hell do i do rotation with these stupid numbers
+
 
     if (!CheckCollision(0, 0, newState)) {
         currentPieceState = newState;
@@ -169,7 +170,7 @@ void TetrisGrid::Render() {
     for (int y = 0; y < GRID_HEIGHT; y++) {
         for (int x = 0; x < GRID_WIDTH; x++) {
             if (grid[y][x] != 0) { // If not empty
-                Rectangle rect = { x * 30, y * 30, 30, 30, Color{255, 0, 0, 255} }; // Example color for filled for now
+                Rectangle rect = { x * 30, y * 30, 30, 30, Color{WHITE} }; // Example color for filled for now
                 canvas->DrawRect(&rect);
             }
         }
@@ -179,7 +180,7 @@ void TetrisGrid::Render() {
     for (int row = 0; row < 4; row++) {
         for (int col = 0; col < 4; col++) {
             if (RotationalStates::getCell(currentPieceState, row, col)) {
-                Rectangle rect = { (piecePosition.x + col) * 30, (piecePosition.y + row) * 30, 30, 30, Color{0, 255, 0, 255} }; // Example color for now
+                Rectangle rect = { (piecePosition.x + col) * 30, (piecePosition.y + row) * 30, 30, 30, Color{BLACK} }; // Example color for now
                 canvas->DrawRect(&rect);
             }
         }

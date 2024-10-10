@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
             tetrisGrid.MovePiece(0, 1); // Move down
         }
         if (currentKeyStates[SDL_SCANCODE_W]) {
-            tetrisGrid.RotatePiece(); // Rotate
+            // tetrisGrid.RotatePiece(); // Rotate
         }
 
         tetrisGrid.Update();
