@@ -30,20 +30,20 @@ int main(int argc, char* argv[]) {
         const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL); // Get current state of the keyboard
 
         if (currentKeyStates[SDL_SCANCODE_A]) {
-            tetrisGrid.MovePiece(-1, 0); // Move left
+            tetrisGrid.movePiece(-1, 0); // Move left
         }
         if (currentKeyStates[SDL_SCANCODE_D]) {
-            tetrisGrid.MovePiece(1, 0); // Move right
+            tetrisGrid.movePiece(1, 0); // Move right
         }
         if (currentKeyStates[SDL_SCANCODE_S]) {
-            tetrisGrid.MovePiece(0, 1); // Move down
+            tetrisGrid.movePiece(0, 1); // Move down
         }
         if (currentKeyStates[SDL_SCANCODE_W]) {
-            // tetrisGrid.RotatePiece(); // Rotate
+            // tetrisGrid.rotatePiece(); // Rotate
         }
 
-        tetrisGrid.Update();
-        tetrisGrid.Render();
+        tetrisGrid.update();
+        tetrisGrid.render();
         SDL_Delay(100); // Control game speed
     }
 
