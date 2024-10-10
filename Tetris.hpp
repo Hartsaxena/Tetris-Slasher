@@ -15,15 +15,17 @@ public:
     TetrisGrid(SDL_Renderer* renderer);
     TetrisGrid(Canvas* canvas);
     ~TetrisGrid();
-    void Update();
-    void Render();
-    void ClearLines();
-    void GeneratePiece();
-    bool MovePiece(int dx, int dy);
-    bool RotatePiece();
-    bool CheckCollision(int dx, int dy, const RotationalState& state) const;
-    void PlacePiece();
+    void update();
+    void render();
+    void clearLines();
+    void generatePiece();
+    bool movePiece(int dx, int dy);
+    bool rotatePiece();
+    bool checkCollision();
+    bool checkWallCollision(int pieceX, int pieceY) const;
+    void placePiece();
     bool isGameOver() const;
+    bool getGridCell(int cellX, int cellY) const { return this->grid[cellY][cellX]; }
 
 private:
     Canvas* canvas;
@@ -32,6 +34,8 @@ private:
     RotationalState currentPieceState;
     int grid[GRID_HEIGHT][GRID_WIDTH]; // Tetris grid
     Position piecePosition; // Current position of the piece
+    int& currX = piecePosition.x;
+    int& currY = piecePosition.y;
     bool gameOver;
 };
 
@@ -47,12 +51,11 @@ typedef struct BlockQueueNode {
 
 class BlockQueue {
 public:
-    template<typename... Blocks>
-    BlockQueue(Blocks... blockData) {
-        static_assert((std::is_same_v<Blocks, Block> && ...), "All entries in BlockQueue must be of type Block\n");
-        (this->enqueue(Blocks), ...);
-    }
-    ~BlockQueue();
+	template<typename... Blocks>
+	BlockQueue(Blocks... blockData) {
+		static_assert((std::is_same_v<Blocks, Block> && ...), "All entries in BlockQueue must be of type Block\n");
+		(this->enqueue(Blocks), ...);
+	}
 
     void enqueue(Block);
     Block dequeue();
