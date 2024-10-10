@@ -81,9 +81,9 @@ class RotationalStateList {
 public:
 	template<typename... States>
 	RotationalStateList(States... rotationalStates) {
-		static_assert((std::is_same_v<States, RotationalState> && ...), "All entries in RotationStateList must be of type RotationalState\n");
+		static_assert((std::is_same_v<States, RotationalState> && ...),
+			"All entries in RotationStateList must be of type RotationalState\n");
 		(this->push(rotationalStates), ...);
-		
 	}
 
 	void push(RotationalState rotationalState);
@@ -100,79 +100,87 @@ class Block {
 public:
 	void rotate() { this->rotationalStates.cycleCurr(); }
 	RotationalState getCurrentState() const { return this->rotationalStates.getCurr(); }
-
-protected:
 	RotationalStateList rotationalStates;
 };
 
 class IBlock : public Block {
 public:
-	RotationalStateList rotationalStates = RotationalStateList(
-		RotationalStates::IBlock1,
-		RotationalStates::IBlock2,
-		RotationalStates::IBlock3,
-		RotationalStates::IBlock4
-	);
+	IBlock() {
+		this->rotationalStates = RotationalStateList(
+			RotationalStates::IBlock1,
+			RotationalStates::IBlock2,
+			RotationalStates::IBlock3,
+			RotationalStates::IBlock4
+		);
+	}
 };
 
 class OBlock : public Block {
 public:
-	RotationalStateList rotationalStates = RotationalStateList(
-		RotationalStates::OBlock1,	
-		RotationalStates::OBlock2,
-		RotationalStates::OBlock3,
-		RotationalStates::OBlock4
-	);
+	OBlock() {
+		this->rotationalStates = RotationalStateList(
+			RotationalStates::OBlock1
+		);
+	}
 };
 
 class SBlock : public Block {
 public:
-	RotationalStateList rotationalStates = RotationalStateList(
-		RotationalStates::SBlock1,
-		RotationalStates::SBlock2,
-		RotationalStates::SBlock3,
-		RotationalStates::SBlock4
-	);
-
+	SBlock() {
+		this->rotationalStates = RotationalStateList(
+			RotationalStates::SBlock1,
+			RotationalStates::SBlock2,
+			RotationalStates::SBlock3,
+			RotationalStates::SBlock4
+		);
+	}
 };
 
 class ZBlock : public Block {
 public:
-	RotationalStateList rotationalStates = RotationalStateList(
-		RotationalStates::ZBlock1,
-		RotationalStates::ZBlock2,
-		RotationalStates::ZBlock3,
-		RotationalStates::ZBlock4
-	);
+	ZBlock() {
+		this->rotationalStates = RotationalStateList(
+			RotationalStates::ZBlock1,
+			RotationalStates::ZBlock2,
+			RotationalStates::ZBlock3,
+			RotationalStates::ZBlock4
+		);
+	}
 };
 
 class LBlock : public Block {
 public:
-	RotationalStateList rotationalStates = RotationalStateList(
-		RotationalStates::LBlock1,
-		RotationalStates::LBlock2,
-		RotationalStates::LBlock3,
-		RotationalStates::LBlock4
-	);
+	LBlock() {
+		this->rotationalStates = RotationalStateList(
+			RotationalStates::LBlock1,
+			RotationalStates::LBlock2,
+			RotationalStates::LBlock3,
+			RotationalStates::LBlock4
+		);
+	}
 };
 
 class TBlock : public Block {
 public:
-	RotationalStateList rotationalStates = RotationalStateList(
-		RotationalStates::TBlock1,
-		RotationalStates::TBlock2,
-		RotationalStates::TBlock3,
-		RotationalStates::TBlock4
-	);
+	TBlock() {
+		this->rotationalStates = RotationalStateList(
+			RotationalStates::TBlock1,
+			RotationalStates::TBlock2,
+			RotationalStates::TBlock3,
+			RotationalStates::TBlock4
+		);
+	}
 };
 
 class JBlock : public Block {
 public:
-	RotationalStateList rotationalStates = RotationalStateList(
-		RotationalStates::JBlock1,
-		RotationalStates::JBlock2,
-		RotationalStates::JBlock3,
-		RotationalStates::JBlock4
-	);
+	JBlock() {
+		this->rotationalStates = RotationalStateList(
+			RotationalStates::JBlock1,
+			RotationalStates::JBlock2,
+			RotationalStates::JBlock3,
+			RotationalStates::JBlock4
+		);
+	}
 };
 
