@@ -9,11 +9,6 @@ typedef struct MouseState {
 } MouseState;
 
 
-// Forward declarations of classes so that they can reference each other.
-class FrontendManager;
-class InputManager;
-
-
 class InputManager
 {
 /*

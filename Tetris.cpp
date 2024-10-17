@@ -78,14 +78,23 @@ void TetrisGrid::generatePiece() {
     }
 }
 
+/* 
+Notice: dx and dy represent changes (delta) in those values. For example, moving 2 squares to the right would be dx = 2, dy = 0.
+*/
 bool TetrisGrid::movePiece(int dx, int dy) {
-    this->piecePosition = { dx, dy };
-    if (!checkCollision()) {
-        piecePosition.x += dx;
-        piecePosition.y += dy;
+    std::cout << "Checking movepiece collision\n";
+    piecePosition.x += dx;
+    piecePosition.y += dy;
+    bool collision = checkCollision();
+
+    if (!collision) {
         return true;
     }
-    return false;
+    else {
+        piecePosition.x -= dx;
+        piecePosition.y -= dy;
+        return false;
+    }
 }
 
 bool TetrisGrid::rotatePiece() {
@@ -140,16 +149,34 @@ bool TetrisGrid::isGameOver() const {
     return gameOver;
 }
 
-void TetrisGrid::update() {
-    if (!isGameOver()) {
-        // Move piece down automatically
-        if (!movePiece(0, 1)) {
-            placePiece(); // Place piece if it cannot move down
+void TetrisGrid::echoState() const {
+    // For debugging
+
+    std::cout << "Canvas pointer: " << this->canvas << "\n";
+
+    for (int y = 0; y < GRID_HEIGHT; y++) {
+        for (int x = 0; x < GRID_WIDTH; x++) {
+            std::cout << " " << this->grid[y][x];
         }
+        std::cout << "\n";
     }
-    else {
-        std::cout << "Game Over!" << std::endl;
+
+    std::cout << "Current piece position: " << this->piecePosition.x << ", " << this->piecePosition.y << "\n";
+}
+
+bool TetrisGrid::update() {
+    this->echoState();
+
+    if (isGameOver()) {
+        std::cout << "Game Over!\n";
+        return false;
     }
+    // Move piece down automatically
+    if (!movePiece(0, 1)) {
+        placePiece(); // Place piece if it colllides
+    }
+
+    return true;
 }
 
 void TetrisGrid::render() {
@@ -160,6 +187,10 @@ void TetrisGrid::render() {
                 Rectangle rect = { x * 30, y * 30, 30, 30, Color{WHITE} }; // Example color for filled for now
                 canvas->DrawRect(&rect);
             }
+            else {
+                Rectangle rect = { x * 30, y * 30, 30, 30, Color{BLUE} }; // Example color for filled for now
+                canvas->DrawRect(&rect);
+            }
         }
     }
 
@@ -167,14 +198,11 @@ void TetrisGrid::render() {
     for (int row = 0; row < 4; row++) {
         for (int col = 0; col < 4; col++) {
             if (RotationalStates::getCell(currentPieceState, row, col)) {
-                Rectangle rect = { (piecePosition.x + col) * 30, (piecePosition.y + row) * 30, 30, 30, Color{BLACK} }; // Example color for now
+                Rectangle rect = { (piecePosition.x + col) * 30, (piecePosition.y + row) * 30, 30, 30, Color{RED} }; // Example color for now
                 canvas->DrawRect(&rect);
             }
         }
     }
-
-    // renderer
-    SDL_RenderPresent(renderer);
 }
 
 
@@ -200,7 +228,7 @@ bool TetrisGrid::checkCollision() {
 			//}
 
 			// Check collision with other grid cells
-			if (this->getGridCell(y, x)) {
+			if (this->getGridCell(gridRelativeX, gridRelativeY)) {
 				return true;
 			}
 		}
