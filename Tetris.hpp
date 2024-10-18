@@ -56,8 +56,6 @@ public:
 		(this->enqueue(Blocks), ...);
 	}
     ~BlockQueue();
-
-    ~BlockQueue();
     void enqueue(Block);
     Block dequeue();
     int getLength() const { return this->length; }

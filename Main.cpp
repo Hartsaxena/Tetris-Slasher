@@ -24,8 +24,6 @@ int main(int argc, char* argv[]) {
             if (event.type == SDL_QUIT) {
                 isRunning = false;
             }
-        }
-
         // Handle keyboard inputs for WASD movement
         const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL); // Get current state of the keyboard
 

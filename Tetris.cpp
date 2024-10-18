@@ -79,7 +79,6 @@ void TetrisGrid::generatePiece() {
 }
 
 bool TetrisGrid::movePiece(int dx, int dy) {
-    this->piecePosition = { dx, dy };
     if (!checkCollision()) {
         piecePosition.x += dx;
         piecePosition.y += dy;
@@ -89,15 +88,25 @@ bool TetrisGrid::movePiece(int dx, int dy) {
 }
 
 bool TetrisGrid::rotatePiece() {
-    RotationalState newState = currentPieceState; // Create a copy of the current state
-    // Attempt to rotate the piece
-    // how the hell do i do rotation with these stupid numbers
+    // Save the current piece's rotational state before attempting to rotate
+    RotationalState oldState = currentPieceState;
 
+    // Rotate the piece
+    currentPiece->rotate();
+
+    // Check if the new rotated state causes a collision
     if (!checkCollision()) {
-        currentPieceState = newState;
+        // No collision, rotation successful
+        currentPieceState = currentPiece->getCurrentState(); // Commit to the new state
         return true;
     }
-    return false;
+    else {
+        // Collision detected, revert to the old rotational state
+        currentPiece->rotationalStates.cycleCurr(); 
+        currentPiece->rotationalStates.cycleCurr();
+        currentPiece->rotationalStates.cycleCurr();
+        return false;
+    }
 }
 
 void TetrisGrid::placePiece() {
@@ -153,12 +162,16 @@ void TetrisGrid::update() {
 }
 
 void TetrisGrid::render() {
-    // Draw the grid
+
+    // render grid
     for (int y = 0; y < GRID_HEIGHT; y++) {
         for (int x = 0; x < GRID_WIDTH; x++) {
             if (grid[y][x] != 0) { // If not empty
                 Rectangle rect = { x * 30, y * 30, 30, 30, Color{WHITE} }; // Example color for filled for now
                 canvas->DrawRect(&rect);
+            }
+            else {
+
             }
         }
     }
@@ -167,14 +180,11 @@ void TetrisGrid::render() {
     for (int row = 0; row < 4; row++) {
         for (int col = 0; col < 4; col++) {
             if (RotationalStates::getCell(currentPieceState, row, col)) {
-                Rectangle rect = { (piecePosition.x + col) * 30, (piecePosition.y + row) * 30, 30, 30, Color{BLACK} }; // Example color for now
+                Rectangle rect = { (piecePosition.x + col) * 30, (piecePosition.y + row) * 30, 30, 30, Color{RED} }; // Example color for now
                 canvas->DrawRect(&rect);
             }
         }
     }
-
-    // renderer
-    SDL_RenderPresent(renderer);
 }
 
 
