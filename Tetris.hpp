@@ -14,21 +14,25 @@ class TetrisGrid {
 public:
     TetrisGrid(Canvas* canvas);
     ~TetrisGrid();
-    void update();
+    bool update();
     void render();
     void clearLines();
     void generatePiece();
-    bool movePiece(int dx, int dy);
     bool rotatePiece();
     bool checkCollision();
     bool checkWallCollision(int pieceX, int pieceY) const;
+
+    bool moveRight() { return movePiece(1, 0); }
+    bool moveLeft() { return movePiece(-1, 0); }
+    bool moveDown() { return movePiece(0, 1); }
+
     void placePiece();
     bool isGameOver() const;
     bool getGridCell(int cellX, int cellY) const { return this->grid[cellY][cellX]; }
+    void echoState() const;
 
 private:
     Canvas* canvas;
-    SDL_Renderer* renderer;
     Block* currentPiece;
     RotationalState currentPieceState;
     int grid[GRID_HEIGHT][GRID_WIDTH]; // Tetris grid
@@ -36,6 +40,8 @@ private:
     int& currX = piecePosition.x;
     int& currY = piecePosition.y;
     bool gameOver = false;
+
+    bool movePiece(int dx, int dy);
 };
 
 

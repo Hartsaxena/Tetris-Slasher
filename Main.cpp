@@ -15,6 +15,7 @@ int main(int argc, char* argv[]) {
     FrontendManager frontend(800, 600, 60, "Tetris Game");
     Canvas canvas = Canvas(frontend.renderer);
     TetrisGrid grid(&canvas);
+    InputManager inputter = InputManager();
     bool isRunning = true;
     SDL_Event event;
 
@@ -26,23 +27,31 @@ int main(int argc, char* argv[]) {
             }
         // Handle keyboard inputs for WASD movement
         const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL); // Get current state of the keyboard
+        inputter.HandleInputs();
 
-        if (currentKeyStates[SDL_SCANCODE_A]) {
-            grid.movePiece(-1, 0); // Move left
+        if (inputter.getKeyState(SDL_SCANCODE_A)) {
+            std::cout << "Moving LEFT\n";
+            grid.moveLeft(); // Move left
         }
-        if (currentKeyStates[SDL_SCANCODE_D]) {
-            grid.movePiece(1, 0); // Move right
+        if (inputter.getKeyState(SDL_SCANCODE_D)) {
+            std::cout << "Moving RIGHT\n";
+            grid.moveRight(); // Move right
         }
-        if (currentKeyStates[SDL_SCANCODE_S]) {
-            grid.movePiece(0, 1); // Move down
+        if (inputter.getKeyState(SDL_SCANCODE_S)) {
+            std::cout << "Moving DOWN\n";
+            grid.moveDown(); // Move down
         }
-        if (currentKeyStates[SDL_SCANCODE_W]) {
-            // tetrisGrid.rotatePiece(); // Rotate
+        if (inputter.getKeyState(SDL_SCANCODE_W) || inputter.getKeyState(SDL_SCANCODE_R)) {
+            // tetrisGrid.RotatePiece(); // Rotate
         }
 
-        grid.update();
         grid.render();
-        SDL_Delay(100); // Control game speed
+        frontend.PresentRenderer();
+        if (!grid.update()) {
+            break;
+        }
+
+        frontend.PauseDelay();
     }
 
     return 0;
