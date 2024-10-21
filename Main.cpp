@@ -25,34 +25,38 @@ int main(int argc, char* argv[]) {
             if (event.type == SDL_QUIT) {
                 isRunning = false;
             }
-        // Handle keyboard inputs for WASD movement
-        const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL); // Get current state of the keyboard
-        inputter.HandleInputs();
+            // Handle keyboard inputs for WASD movement
+            const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL); // Get current state of the keyboard
+            inputter.HandleInputs();
 
-        if (inputter.getKeyState(SDL_SCANCODE_A)) {
-            std::cout << "Moving LEFT\n";
-            grid.moveLeft(); // Move left
-        }
-        if (inputter.getKeyState(SDL_SCANCODE_D)) {
-            std::cout << "Moving RIGHT\n";
-            grid.moveRight(); // Move right
-        }
-        if (inputter.getKeyState(SDL_SCANCODE_S)) {
-            std::cout << "Moving DOWN\n";
-            grid.moveDown(); // Move down
-        }
-        if (inputter.getKeyState(SDL_SCANCODE_W) || inputter.getKeyState(SDL_SCANCODE_R)) {
-            // tetrisGrid.RotatePiece(); // Rotate
+            if (inputter.getKeyState(SDL_SCANCODE_A)) {
+                std::cout << "Moving LEFT\n";
+                grid.moveLeft(); // Move left
+            }
+            if (inputter.getKeyState(SDL_SCANCODE_D)) {
+                std::cout << "Moving RIGHT\n";
+                grid.moveRight(); // Move right
+            }
+            if (inputter.getKeyState(SDL_SCANCODE_S)) {
+                std::cout << "Moving DOWN\n";
+                grid.moveDown(); // Move down
+            }
+            if (inputter.getKeyState(SDL_SCANCODE_W) || inputter.getKeyState(SDL_SCANCODE_R)) {
+                // grid.RotatePiece(); // Rotate
+            }
+
+            grid.rotatePiece();
+            grid.render();
+            frontend.PresentRenderer();
+            if (!grid.update()) {
+                std::cout << "HOLY HELL THIS IS THE ERROR" << std::endl;
+                break;
+            }
+
+            frontend.PauseDelay();
         }
 
-        grid.render();
-        frontend.PresentRenderer();
-        if (!grid.update()) {
-            break;
-        }
-
-        frontend.PauseDelay();
+        
+        return 0;
     }
-
-    return 0;
 }

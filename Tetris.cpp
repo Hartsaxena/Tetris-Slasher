@@ -85,7 +85,7 @@ bool TetrisGrid::movePiece(int dx, int dy) {
     std::cout << "Checking movepiece collision\n";
     piecePosition.x += dx;
     piecePosition.y += dy;
-    bool collision = checkCollision();
+    bool collision = (checkCollision() || checkWallCollision());
 
     if (!collision) {
         return true;
@@ -99,25 +99,25 @@ bool TetrisGrid::movePiece(int dx, int dy) {
 
 bool TetrisGrid::rotatePiece() {
     // Save the current piece's rotational state before attempting to rotate
-    RotationalState oldState = currentPieceState;
+    RotationalState oldState = currentPiece->getCurrentState();  // Store the old state
 
     // Rotate the piece
     currentPiece->rotate();
 
     // Check if the new rotated state causes a collision
-    if (!checkCollision()) {
+    if (!checkCollision() || !checkWallCollision()) {
         // No collision, rotation successful
-        currentPieceState = currentPiece->getCurrentState(); // Commit to the new state
         return true;
     }
     else {
-        // Collision detected, revert to the old rotational state
-        currentPiece->rotationalStates.cycleCurr(); 
-        currentPiece->rotationalStates.cycleCurr();
-        currentPiece->rotationalStates.cycleCurr();
+        // Collision detected,  revert to the old rotational state
+        while (currentPiece->getCurrentState() != oldState) {
+            currentPiece->rotate();  // Rotate back 
+        }
         return false;
     }
 }
+
 
 void TetrisGrid::placePiece() {
     for (int row = 0; row < 4; row++) {
@@ -133,14 +133,14 @@ void TetrisGrid::placePiece() {
 
 void TetrisGrid::clearLines() {
     for (int y = 0; y < GRID_HEIGHT; y++) {
-        bool lineFilled = true;
+        int lineFilled = lineFilled + 1;
         for (int x = 0; x < GRID_WIDTH; x++) {
             if (grid[y][x] == 0) {
                 lineFilled = false;
                 break;
             }
         }
-        if (lineFilled) {
+        if (lineFilled >= 1) {
             // Clear the line
             for (int row = y; row > 0; row--) {
                 for (int col = 0; col < GRID_WIDTH; col++) {
@@ -151,6 +151,8 @@ void TetrisGrid::clearLines() {
             for (int col = 0; col < GRID_WIDTH; col++) {
                 grid[0][col] = 0;
             }
+            // call our point calculator
+            pointCalculator(lineFilled);
         }
     }
 }
@@ -248,6 +250,30 @@ bool TetrisGrid::checkCollision() {
 	return false;
 }
 
-bool TetrisGrid::checkWallCollision(int pieceX, int pieceY) const {
-	return (pieceX < 0 || pieceX >= GRID_WIDTH);
+bool TetrisGrid::checkWallCollision() {
+    RotationalState pieceState = this->currentPiece->getCurrentState();
+    for (int y = 3; y >= 0; y--) {    // Row
+        for (int x = 0; x < 4; x++) { // Column
+            bool val = RotationalStates::getCell(pieceState, y, x);
+            if (val == 0) {
+                continue;
+            }
+
+            int gridRelativeX = this->currX + x;
+            int gridRelativeY = this->currY + y;
+
+            return (gridRelativeX < 0 || gridRelativeX >= GRID_WIDTH);
+
+
+        }
+    }
+
+    return false;
+}
+
+
+int TetrisGrid::pointCalculator(int lineAmount) {
+    if (lineAmount == 1) {
+        pointCount += (lineAmount * 100)
+    }
 }
