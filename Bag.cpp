@@ -39,6 +39,7 @@ void Bag::pullFromQueue(std::queue<Block*>& initialQueue) {
         Block* pulledBlock = initialQueue.front(); // Grab the Block from the Queue
         initialQueue.pop(); // Remove the Block
         SavedQueue.push(pulledBlock); // Add the Block
+        std::cout << "Pulled From Queue" << std::endl;
     }
 }
 
@@ -47,5 +48,6 @@ void Bag::AddToQueue(std::queue<Block*>& initialQueue) {
         Block* pulledBlock = SavedQueue.front();
         SavedQueue.pop();
         initialQueue.push(pulledBlock);
+        std::cout << "Added From Queue" << std::endl;
     }
 }

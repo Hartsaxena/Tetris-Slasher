@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <type_traits>
 
 enum BlockType {
 	I_BLOCK,
@@ -73,30 +74,45 @@ typedef struct RotationalStateNode { // Circular singly-linked list
 
     RotationalState data;
     RotationalStateNode* next = nullptr;
+
 } RotationalStateNode;
 
 class RotationalStateList {
 public:
-    template<typename... States>
-    RotationalStateList(States... rotationalStates) {
-        static_assert((std::is_same_v<States, RotationalState> && ...),
-            "All entries in RotationStateList must be of type RotationalState\n");
-        (this->push(States), ...);
-    }
+	template<typename... States>
+	RotationalStateList(States... rotationalStates) {
+		// Use std::conjunction to ensure all template parameters are RotationalState
+		static_assert(std::conjunction_v<std::is_same<States, RotationalState>...>,
+			"All entries in RotationStateList must be of type RotationalState");
 
-    void push(RotationalState rotationalState);
-    RotationalState getCurr() const { return this->curr->data; }
-    void cycleCurr() { this->curr = this->curr->next; }
+		// Push all states using fold expression
+		(push(rotationalStates), ...);
+	}
+
+	void push(RotationalState rotationalState);
+	RotationalState getCurr() const { return this->curr->data; }
+	void cycleCurr() { this->curr = this->curr->next; }
 
 private:
-    RotationalStateNode* head = nullptr;
-    RotationalStateNode* tail = nullptr;
-    RotationalStateNode* curr = nullptr; // For tracking currently active state
+	struct RotationalStateNode {
+		explicit RotationalStateNode(RotationalState data) { this->data = data; }
+
+		RotationalState data;
+		RotationalStateNode* next = nullptr;
+	};
+
+
+	RotationalStateNode* head = nullptr;
+	RotationalStateNode* tail = nullptr;
+	RotationalStateNode* curr = nullptr;
 };
+
 
 class Block {
 public:
 	void rotate() { this->rotationalStates.cycleCurr(); }
+	BlockType type;
+	Block(BlockType type) : type(type) {}
 
 protected:
 	RotationalStateList rotationalStates;
@@ -169,3 +185,4 @@ private:
 		RotationalStates::JBlock4
 	);
 };
+

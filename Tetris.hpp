@@ -1,37 +1,35 @@
 #pragma once
 #include "Blocks.hpp"
+#include <vector>
+#include <algorithm>
+#include <random>
 
-typedef struct BlockQueueNode {
-	explicit BlockQueueNode(Block val) { this->val = val; }
+std::string blockTypeToString(BlockType type);
 
-	Block val;
-	BlockQueueNode* next;
-} BlockQueueNode;
+class BlockQueueNode {
+public:
+    explicit BlockQueueNode(Block* val) : val(val), next(nullptr) {}
+    Block* val;  // Pointer to Block
+    BlockQueueNode* next;
+};
 
 class BlockQueue {
 public:
-	template<typename... Blocks>
-	BlockQueue(Blocks... blockData) {
-		static_assert((std::is_same_v<Blocks, Block> && ...), "All entries in BlockQueue must be of type Block\n");
-		(this->enqueue(Blocks), ...);
-	}
+    BlockQueue();
+    ~BlockQueue();  // Only declare the destructor here
 
-	~BlockQueue();
-
-	void enqueue(Block);
-	Block dequeue();
-	int getLength() const { return this->length; }
+    void enqueue(Block* val);
+    Block* dequeue();
+    int getLength() const { return this->length; }
+    bool isEmpty() const { return first == nullptr; }
+    void refillQueue();
 
 private:
-	BlockQueueNode* first = nullptr;
-	BlockQueueNode* last = nullptr;
-	int length = 0;
-};
+    BlockQueueNode* first = nullptr;
+    BlockQueueNode* last = nullptr;
+    int length = 0;
 
-class TetrisGrid {
-public:
-	TetrisGrid();
-	~TetrisGrid();
-
-private:
+    void generateBag();
+    void fillQueueFromBag();
+    std::vector<BlockType> blockBag; // Store block types for the bag
 };

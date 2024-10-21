@@ -21,17 +21,22 @@ int main(int argc, char* argv[])
     Canvas gameRenderer(front.renderer);
 
     // Initializing Game Variables
-    Bag bag; 
+    Bag bag;
+    BlockQueue blockQueue;
+    std::cout << "Block queue length: " << blockQueue.getLength() << std::endl;
 
-    std::queue<Block*> blockQueue;  // Create an initial block queue
+
     // Testing Variables
     Rectangle testRectangle = { 100, 100, 33, 33, RED };
 
 
-    std::cout<<"Finished Loading! Starting Game Loop\n\n"; // Separate game errors from initializing errors.
+    std::cout << "Finished Loading! Starting Game Loop\n\n"; // Separate game errors from initializing errors.
 
     // Main Game Loop
     bool IsRunning = true;
+    bool RKeyPressed = false;
+    bool storeKeyPressed = false; 
+    bool unstoreKeyPressed = false;
     while (IsRunning) {
 
         // Handle Input Events
@@ -52,12 +57,18 @@ int main(int argc, char* argv[])
             testRectangle.rect.x -= cubeSpeed;
         if (input.getKeyState(SDL_SCANCODE_D))
             testRectangle.rect.x += cubeSpeed;
-        if (input.getKeyState(SDL_SCANCODE_R))
-            bag.pullFromQueue(blockQueue);
-            std::cout << "Pulled From Queue";
-        if (input.getKeyState(SDL_SCANCODE_T))
-            bag.AddToQueue(blockQueue);
-            std::cout << "Added From Queue";
+        if (input.getKeyState(SDL_SCANCODE_R)) {
+            if (!RKeyPressed) {  // If it wasn't already pressed
+                Block* nextBlock = blockQueue.dequeue();  // Dequeue the next block
+                std::cout << "Dequeued block type: " << blockTypeToString(nextBlock->type) << std::endl;
+                delete nextBlock;  // Free the memory allocated for the block
+                RKeyPressed = true;  // Mark the key as pressed
+            }
+        }
+        else {
+            RKeyPressed = false;  // Reset when the key is released
+        }
+
         // Boundary Checking
         testRectangle.snap(front.getScreenX(), front.getScreenY());
 
