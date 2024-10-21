@@ -2,23 +2,19 @@
 
 #include <iostream>
 #include <SDL.h>
+#include <vector>
+#include "Colors.hpp"
 
 typedef struct MouseState {
     bool ButtonStates[5];
     int x, y;
 } MouseState;
 
-
-// Forward declarations of classes so that they can reference each other.
-class FrontendManager;
-class InputManager;
-
-
 class InputManager
 {
-/*
-The purpose of this class is to manage inputs of the game.
-*/
+    /*
+    The purpose of this class is to manage inputs of the game.
+    */
 
 public:
     InputManager();
@@ -26,12 +22,15 @@ public:
 
     bool HandleInputs();
     void InitMouseState();
-    bool getKeyState(SDL_Scancode keyCode) const { return this->inputKeys[keyCode]; }
+
+    bool getKeyState(SDL_Scancode keycode) const { return this->inputKeyStates[keycode]; }
+    bool getKeyPress(SDL_Scancode keycode) const { return (std::count(this->inputKeyPresses.begin(), this->inputKeyPresses.end(), keycode) != 0); }
 
 private:
     MouseState* mouseState;
     SDL_Event* inputEvent;
-    bool inputKeys[286];
+    bool inputKeyStates[286]; // true = key held down, false = key not held down
+    std::vector<SDL_Scancode> inputKeyPresses;
 };
 
 

@@ -23,7 +23,6 @@ typedef struct Position {
 
 
 // Class Declarations
-class Canvas;
 class Surface;
 
 class Canvas
@@ -43,6 +42,10 @@ public:
 
     void BlitSurface(Surface* surface, Position position) {};
 
+    
+
 private:
     SDL_Renderer* renderer;
 };
+
+    
