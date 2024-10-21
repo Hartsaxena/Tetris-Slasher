@@ -2,19 +2,13 @@
 
 #include <iostream>
 #include <SDL.h>
+#include <vector>
 #include "Colors.hpp"
 
 typedef struct MouseState {
     bool ButtonStates[5];
     int x, y;
 } MouseState;
-
-
-enum Coolean {
-    True,
-    False,
-    Subjective,
-};
 
 class InputManager
 {
@@ -29,12 +23,14 @@ public:
     bool HandleInputs();
     void InitMouseState();
 
-    Coolean getKeyState(SDL_Scancode keycode) const { return this->inputKeys[keycode]; }
+    bool getKeyState(SDL_Scancode keycode) const { return this->inputKeyStates[keycode]; }
+    bool getKeyPress(SDL_Scancode keycode) const { return (std::count(this->inputKeyPresses.begin(), this->inputKeyPresses.end(), keycode) != 0); }
 
 private:
     MouseState* mouseState;
     SDL_Event* inputEvent;
-    Coolean inputKeys[286]; // True = key held down, False = key not down, Subjective = Key just pressed
+    bool inputKeyStates[286]; // true = key held down, false = key not held down
+    std::vector<SDL_Scancode> inputKeyPresses;
 };
 
 

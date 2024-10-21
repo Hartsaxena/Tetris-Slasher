@@ -23,34 +23,31 @@ int main(int argc, char* argv[]) {
         // Handle Events and update keyboard
         isRunning = inputter.HandleInputs();
 
-        // Handle keyboard inputs for WASD movement
-        const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL); // Get current state of the keyboard
-
-        if (inputter.getKeyState(SDL_SCANCODE_A) == True || inputter.getKeyState(SDL_SCANCODE_LEFT) == True) {
+        if (inputter.getKeyPress(SDL_SCANCODE_A)) {
             std::cout << "Moving LEFT\n";
             grid.moveLeft(); // Move left
         }
-        if (inputter.getKeyState(SDL_SCANCODE_D) == True || inputter.getKeyState(SDL_SCANCODE_RIGHT) == True) {
+        if (inputter.getKeyPress(SDL_SCANCODE_D)) {
             std::cout << "Moving RIGHT\n";
             grid.moveRight(); // Move right
         }
-        if (inputter.getKeyState(SDL_SCANCODE_S) == True || inputter.getKeyState(SDL_SCANCODE_DOWN) == True) {
+        if (inputter.getKeyPress(SDL_SCANCODE_S)) {
             std::cout << "Moving DOWN\n";
             grid.moveDown(); // Move down
         }
-        if (inputter.getKeyState(SDL_SCANCODE_W) == Subjective || inputter.getKeyState(SDL_SCANCODE_R) == True || inputter.getKeyState(SDL_SCANCODE_UP) == True) {
-             grid.rotatePiece(); // Rotate
+        if (inputter.getKeyPress(SDL_SCANCODE_W) || inputter.getKeyPress(SDL_SCANCODE_R)) {
+            std::cout << "W or R pressed. Rotate.\n";
+            grid.rotatePiece(); // Rotate
         }
 
         canvas.BlankScreen();
         grid.render();
         frontend.PresentRenderer();
         if (!grid.update()) {
-            break;
+            std::cout << "ERROR: Grid Update returned false.\n";
+            return 1;
         }
-
         frontend.PauseDelay();
     }
-
     return 0;
 }

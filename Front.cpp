@@ -78,8 +78,9 @@ InputManager::InputManager()
     Constructor for the InputManager class.
     */
 
-    for (int i = 0; i < 286; i++)
-        this->inputKeys[i] = False;
+    for (int i = 0; i < 286; i++) {
+        this->inputKeyStates[i] = false;
+    }
 
     this->inputEvent = new SDL_Event;
     if (this->inputEvent == NULL) {
@@ -108,23 +109,31 @@ bool InputManager::HandleInputs()
     This function handles all input events. It returns true if the game should continue running, false if it should quit.
     */
     bool IsRunning = true;
+    inputKeyPresses.clear();
+
     while (SDL_PollEvent(this->inputEvent) > 0) {
+
+        SDL_Scancode scancode = inputEvent->key.keysym.scancode;
         switch (inputEvent->type) {
+
+            // Key presses
             case SDL_KEYDOWN: {
-                this->inputKeys[inputEvent->key.keysym.scancode] = Subjective;
+                this->inputKeyStates[scancode] = true;
+                this->inputKeyPresses.push_back(scancode);
                 break;
             }
             case SDL_KEYUP: {
-                this->inputKeys[inputEvent->key.keysym.scancode] = False;
+                this->inputKeyStates[scancode] = false;
                 break;
             }
             
+            // Mouse movement / presses
             case SDL_MOUSEBUTTONDOWN: {
-                this->mouseState->ButtonStates[inputEvent->button.button] = True;
+                this->mouseState->ButtonStates[inputEvent->button.button] = true;
                 break;
             }
             case SDL_MOUSEBUTTONUP: {
-                this->mouseState->ButtonStates[inputEvent->button.button] = False;
+                this->mouseState->ButtonStates[inputEvent->button.button] = false;
                 break;
             }
             case SDL_MOUSEMOTION: {
@@ -133,6 +142,7 @@ bool InputManager::HandleInputs()
                 break;
             }
 
+            // Exiting game
             case SDL_QUIT: {
                 IsRunning = false;
                 break;
