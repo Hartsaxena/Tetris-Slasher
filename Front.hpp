@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <SDL.h>
+#include "Colors.hpp"
 
 typedef struct MouseState {
     bool ButtonStates[5];
@@ -9,11 +10,17 @@ typedef struct MouseState {
 } MouseState;
 
 
+enum Coolean {
+    True,
+    False,
+    Subjective,
+};
+
 class InputManager
 {
-/*
-The purpose of this class is to manage inputs of the game.
-*/
+    /*
+    The purpose of this class is to manage inputs of the game.
+    */
 
 public:
     InputManager();
@@ -21,12 +28,13 @@ public:
 
     bool HandleInputs();
     void InitMouseState();
-    bool getKeyState(SDL_Scancode keyCode) const { return this->inputKeys[keyCode]; }
+
+    Coolean getKeyState(SDL_Scancode keycode) const { return this->inputKeys[keycode]; }
 
 private:
     MouseState* mouseState;
     SDL_Event* inputEvent;
-    bool inputKeys[286];
+    Coolean inputKeys[286]; // True = key held down, False = key not down, Subjective = Key just pressed
 };
 
 

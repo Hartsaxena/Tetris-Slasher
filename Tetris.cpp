@@ -175,15 +175,20 @@ void TetrisGrid::echoState() const {
 }
 
 bool TetrisGrid::update() {
-    this->echoState();
+    //this->echoState();
 
     if (isGameOver()) {
         std::cout << "Game Over!\n";
         return false;
     }
-    // Move piece down automatically
-    if (!movePiece(0, 1)) {
-        placePiece(); // Place piece if it colllides
+
+    if (this->frameTimer-- == 0) {
+        // Move piece down automatically
+        if (!movePiece(0, 1)) {
+            placePiece(); // Place piece if it colllides
+        }
+
+        this->frameTimer = maxFrameTimer;
     }
 
     return true;
