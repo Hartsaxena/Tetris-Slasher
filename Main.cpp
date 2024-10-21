@@ -17,36 +17,32 @@ int main(int argc, char* argv[]) {
     TetrisGrid grid(&canvas);
     InputManager inputter = InputManager();
     bool isRunning = true;
-    SDL_Event event;
 
     while (isRunning) {
-        // Handle inputs
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
-                isRunning = false;
-            }
-        }
+
+        // Handle Events and update keyboard
+        isRunning = inputter.HandleInputs();
 
         // Handle keyboard inputs for WASD movement
         const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL); // Get current state of the keyboard
-        inputter.HandleInputs();
 
-        if (inputter.getKeyState(SDL_SCANCODE_A)) {
+        if (inputter.getKeyState(SDL_SCANCODE_A) == True || inputter.getKeyState(SDL_SCANCODE_LEFT) == True) {
             std::cout << "Moving LEFT\n";
             grid.moveLeft(); // Move left
         }
-        if (inputter.getKeyState(SDL_SCANCODE_D)) {
+        if (inputter.getKeyState(SDL_SCANCODE_D) == True || inputter.getKeyState(SDL_SCANCODE_RIGHT) == True) {
             std::cout << "Moving RIGHT\n";
             grid.moveRight(); // Move right
         }
-        if (inputter.getKeyState(SDL_SCANCODE_S)) {
+        if (inputter.getKeyState(SDL_SCANCODE_S) == True || inputter.getKeyState(SDL_SCANCODE_DOWN) == True) {
             std::cout << "Moving DOWN\n";
             grid.moveDown(); // Move down
         }
-        if (inputter.getKeyState(SDL_SCANCODE_W) || inputter.getKeyState(SDL_SCANCODE_R)) {
-            // tetrisGrid.RotatePiece(); // Rotate
+        if (inputter.getKeyState(SDL_SCANCODE_W) == Subjective || inputter.getKeyState(SDL_SCANCODE_R) == True || inputter.getKeyState(SDL_SCANCODE_UP) == True) {
+             grid.rotatePiece(); // Rotate
         }
 
+        canvas.BlankScreen();
         grid.render();
         frontend.PresentRenderer();
         if (!grid.update()) {

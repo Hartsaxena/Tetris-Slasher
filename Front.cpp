@@ -55,7 +55,6 @@ FrontendManager::~FrontendManager()
     SDL_Quit();
 }
 
-
 void FrontendManager::PresentRenderer() const
 {
     /*
@@ -73,7 +72,6 @@ void FrontendManager::PauseDelay() const
 }
 
 
-
 InputManager::InputManager()
 {
     /*
@@ -81,7 +79,7 @@ InputManager::InputManager()
     */
 
     for (int i = 0; i < 286; i++)
-        this->inputKeys[i] = false;
+        this->inputKeys[i] = False;
 
     this->inputEvent = new SDL_Event;
     if (this->inputEvent == NULL) {
@@ -113,20 +111,20 @@ bool InputManager::HandleInputs()
     while (SDL_PollEvent(this->inputEvent) > 0) {
         switch (inputEvent->type) {
             case SDL_KEYDOWN: {
-                this->inputKeys[inputEvent->key.keysym.scancode] = true;
+                this->inputKeys[inputEvent->key.keysym.scancode] = Subjective;
                 break;
             }
             case SDL_KEYUP: {
-                this->inputKeys[inputEvent->key.keysym.scancode] = false;
+                this->inputKeys[inputEvent->key.keysym.scancode] = False;
                 break;
             }
             
             case SDL_MOUSEBUTTONDOWN: {
-                this->mouseState->ButtonStates[inputEvent->button.button] = true;
+                this->mouseState->ButtonStates[inputEvent->button.button] = True;
                 break;
             }
             case SDL_MOUSEBUTTONUP: {
-                this->mouseState->ButtonStates[inputEvent->button.button] = false;
+                this->mouseState->ButtonStates[inputEvent->button.button] = False;
                 break;
             }
             case SDL_MOUSEMOTION: {

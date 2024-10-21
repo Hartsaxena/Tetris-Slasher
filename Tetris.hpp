@@ -35,6 +35,8 @@ private:
     Canvas* canvas;
     Block* currentPiece;
     RotationalState currentPieceState;
+    int maxFrameTimer = 30;
+    int frameTimer = maxFrameTimer;
     int grid[GRID_HEIGHT][GRID_WIDTH]; // Tetris grid
     Position piecePosition; // Current position of the piece
     int& currX = piecePosition.x;

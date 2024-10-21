@@ -98,15 +98,23 @@ bool TetrisGrid::movePiece(int dx, int dy) {
 }
 
 bool TetrisGrid::rotatePiece() {
-    RotationalState newState = currentPieceState; // Create a copy of the current state
-    // Attempt to rotate the piece
-    // how the hell do i do rotation with these stupid numbers
+    // Save the current piece's rotational state before attempting to rotate
+    RotationalState oldState = currentPieceState;
 
+    // Rotate the piece
+    currentPiece->rotate();
+
+    // Check if the new rotated state causes a collision
     if (!checkCollision()) {
-        currentPieceState = newState;
+        // No collision, rotation successful
+        currentPieceState = currentPiece->getCurrentState(); // Commit to the new state
         return true;
     }
-    return false;
+    else {
+        // Collision detected, revert to the old rotational state
+        currentPiece->rotationalStates.cycleCurr();
+        return false;
+    }
 }
 
 void TetrisGrid::placePiece() {
@@ -165,15 +173,20 @@ void TetrisGrid::echoState() const {
 }
 
 bool TetrisGrid::update() {
-    this->echoState();
+    //this->echoState();
 
     if (isGameOver()) {
         std::cout << "Game Over!\n";
         return false;
     }
-    // Move piece down automatically
-    if (!movePiece(0, 1)) {
-        placePiece(); // Place piece if it colllides
+
+    if (this->frameTimer-- == 0) {
+        // Move piece down automatically
+        if (!movePiece(0, 1)) {
+            placePiece(); // Place piece if it colllides
+        }
+
+        this->frameTimer = maxFrameTimer;
     }
 
     return true;
