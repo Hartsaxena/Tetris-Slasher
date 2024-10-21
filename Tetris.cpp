@@ -133,7 +133,7 @@ void TetrisGrid::placePiece() {
 
 void TetrisGrid::clearLines() {
     for (int y = 0; y < GRID_HEIGHT; y++) {
-        int lineFilled = lineFilled + 1;
+        lineFilled = lineFilled + 1;
         for (int x = 0; x < GRID_WIDTH; x++) {
             if (grid[y][x] == 0) {
                 lineFilled = false;
@@ -274,6 +274,17 @@ bool TetrisGrid::checkWallCollision() {
 
 int TetrisGrid::pointCalculator(int lineAmount) {
     if (lineAmount == 1) {
-        pointCount += (lineAmount * 100)
+        pointCount += (lineAmount * 100);
     }
+    else if (lineAmount == 2) {
+        pointCount += (lineAmount * 300);
+    }
+    else if (lineAmount == 3) {
+        pointCount += (lineAmount * 500);
+    }
+    else if (lineAmount == 4) {
+        pointCount += (lineAmount * 800);
+    }
+    lineFilled = 0;
+    return pointCount;
 }

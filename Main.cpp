@@ -44,19 +44,16 @@ int main(int argc, char* argv[]) {
             if (inputter.getKeyState(SDL_SCANCODE_W) || inputter.getKeyState(SDL_SCANCODE_R)) {
                 // grid.RotatePiece(); // Rotate
             }
-
-            grid.rotatePiece();
+        }
+            canvas.displayInt(grid.pointCount, 30);
             grid.render();
             frontend.PresentRenderer();
             if (!grid.update()) {
-                std::cout << "HOLY HELL THIS IS THE ERROR" << std::endl;
                 break;
             }
-
             frontend.PauseDelay();
         }
 
         
         return 0;
     }
-}
