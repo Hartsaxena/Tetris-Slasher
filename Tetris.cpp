@@ -281,5 +281,15 @@ int TetrisGrid::pointCalculator(int lineAmount) {
     if (lineAmount == 1) {
         pointCount += (lineAmount * 100);
     }
-    return 0;
+    else if (lineAmount == 2) {
+        pointCount += (lineAmount * 300);
+    }
+    else if (lineAmount == 3) {
+        pointCount += (lineAmount * 500);
+    }
+    else if (lineAmount == 4) {
+        pointCount += (lineAmount * 800);
+    }
+    lineFilled = 0;
+    return pointCount;
 }

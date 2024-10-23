@@ -39,7 +39,8 @@ public:
     void FillScreenColor(Color color) const;
     void BlankScreen() const;
     void DrawRect(Rectangle* rect) const;
-
+    void renderDigit(int digit, int x, int y, int size);
+    void displayInt(int number, int size);
     void BlitSurface(Surface* surface, Position position) {};
 
     
