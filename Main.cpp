@@ -61,12 +61,12 @@ int main(int argc, char* argv[])
             if (!RKeyPressed) {  // If it wasn't already pressed
                 Block* nextBlock = blockQueue.dequeue();  // Dequeue the next block
                 std::cout << "Dequeued block type: " << blockTypeToString(nextBlock->type) << std::endl;
-                delete nextBlock;  // Free the memory allocated for the block
-                RKeyPressed = true;  // Mark the key as pressed
+                delete nextBlock;  
+                RKeyPressed = true; 
             }
         }
         else {
-            RKeyPressed = false;  // Reset when the key is released
+            RKeyPressed = false;  
         }
 
         // Boundary Checking
