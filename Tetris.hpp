@@ -22,7 +22,6 @@ public:
     bool checkCollision();
     bool checkWallCollision();
     int pointCalculator(int lineAmount);
-
     bool moveRight() { return movePiece(1, 0); }
     bool moveLeft() { return movePiece(-1, 0); }
     bool moveDown() { return movePiece(0, 1); }
@@ -31,6 +30,9 @@ public:
     bool isGameOver() const;
     bool getGridCell(int cellX, int cellY) const { return this->grid[cellY][cellX]; }
     void echoState() const;
+
+    int pointCount;
+    int lineFilled;
 
 private:
     Canvas* canvas;
