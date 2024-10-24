@@ -43,8 +43,6 @@ public:
     void displayInt(int number, int size);
     void BlitSurface(Surface* surface, Position position) {};
 
-    
-
 private:
     SDL_Renderer* renderer;
 };

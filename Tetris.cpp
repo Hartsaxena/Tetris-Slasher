@@ -196,8 +196,10 @@ bool TetrisGrid::update() {
 }
 
 void TetrisGrid::render() {
+    // Render points
+    canvas->displayInt(this->pointCount, 30);
 
-    // render grid
+    // Render grid
     for (int y = 0; y < GRID_HEIGHT; y++) {
         for (int x = 0; x < GRID_WIDTH; x++) {
             if (grid[y][x] != 0) { // If not empty
@@ -238,12 +240,6 @@ bool TetrisGrid::checkCollision() {
 			int gridRelativeX = this->currX + x;
 			int gridRelativeY = this->currY + y;
 
-			//// NOTE: I'm not sure if checking collision with the sides of the grid should be in this method.
-			//// Check collision with sides of grid
-			//(this->checkWallCollision(gridRelativeX, gridRelativeY)) {
-			//	return true;
-			//}
-
 			// Check collision with other grid cells
 			if (this->getGridCell(gridRelativeX, gridRelativeY)) {
 				return true;
@@ -267,8 +263,6 @@ bool TetrisGrid::checkWallCollision() {
             int gridRelativeY = this->currY + y;
 
             return (gridRelativeX < 0 || gridRelativeX >= GRID_WIDTH);
-
-
         }
     }
 
