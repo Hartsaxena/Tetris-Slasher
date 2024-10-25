@@ -98,9 +98,10 @@ private:
 
 class Block {
 public:
-	void rotate() { this->rotationalStates.cycleCurr(); }
+	void rotate() { RotationalState debugCurr = this->rotationalStates.getCurr();  this->rotationalStates.cycleCurr(); }
 	RotationalState getCurrentState() const { return this->rotationalStates.getCurr(); }
 	RotationalStateList rotationalStates;
+
 };
 
 class IBlock : public Block {

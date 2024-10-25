@@ -23,6 +23,7 @@
     <ClInclude Include="Colors.hpp" />
     <ClInclude Include="Front.hpp" />
     <ClInclude Include="Render.hpp" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Tetris.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -34,6 +35,16 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\PieceReference.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="Resources\fonts\Lora-Regular.ttf" />
+    <Font Include="Resources\fonts\munro-narrow.ttf" />
+    <Font Include="Resources\fonts\munro-small.ttf" />
+    <Font Include="Resources\fonts\munro.ttf" />
+    <Font Include="Resources\fonts\PixelForce.ttf" />
+    <Font Include="Resources\fonts\PressStart2P.ttf" />
+    <Font Include="Resources\fonts\slkscr.ttf" />
+    <Font Include="Resources\fonts\slkscre.ttf" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

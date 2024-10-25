@@ -19,14 +19,13 @@ void RotationalStates::setCell(RotationalState* state, int row, int col, bool va
 void RotationalStateList::push(RotationalState rotationalState) {
 	RotationalStateNode* newNode = new RotationalStateNode(&rotationalState);
 	if (this->head == nullptr) {
-		this->head = newNode;
-		this->head->next = newNode;
-		this->tail = newNode;
-		this->curr = this->head;
+		head = tail = curr = newNode;
+		tail->next = head;
+
 		return;
 	}
 
-	newNode->next = this->head;
-	this->tail->next = newNode;
-	this->head = newNode;
+	newNode->next = this->head; // New node points to the head
+	this->tail->next = newNode; // Old tail points to the new node
+	this->tail = newNode;       // Update the tail to be the new node
 }
