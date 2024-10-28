@@ -58,8 +58,8 @@ int main(int argc, char* argv[])
         if (input.getKeyState(SDL_SCANCODE_D))
             testRectangle.rect.x += cubeSpeed;
         if (input.getKeyState(SDL_SCANCODE_R)) {
-            if (!RKeyPressed) {  // If it wasn't already pressed
-                Block* nextBlock = blockQueue.dequeue();  // Dequeue the next block
+            if (!RKeyPressed) {  
+                Block* nextBlock = blockQueue.dequeue();  
                 std::cout << "Dequeued block type: " << blockTypeToString(nextBlock->type) << std::endl;
                 delete nextBlock;  
                 RKeyPressed = true; 
@@ -68,6 +68,21 @@ int main(int argc, char* argv[])
         else {
             RKeyPressed = false;  
         }
+        if (input.getKeyState(SDL_SCANCODE_T)) {
+            if (!storeKeyPressed) {
+                bag.pullFromQueue(blockQueue);
+                storeKeyPressed = true;
+            }
+        }
+        else { storeKeyPressed = false; }
+        if (input.getKeyState(SDL_SCANCODE_Y)) {
+            if (!unstoreKeyPressed) {
+                bag.AddToQueue(blockQueue);
+                unstoreKeyPressed = true;
+            }
+        }
+        else { unstoreKeyPressed = false; }
+
 
         // Boundary Checking
         testRectangle.snap(front.getScreenX(), front.getScreenY());

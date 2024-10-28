@@ -34,20 +34,24 @@ Block* Bag::getNextBlock() {
     return nextBlock;
 }
 
-void Bag::pullFromQueue(std::queue<Block*>& initialQueue) {
-    if (!initialQueue.empty()) {
-        Block* pulledBlock = initialQueue.front(); // Grab the Block from the Queue
-        initialQueue.pop(); // Remove the Block
-        SavedQueue.push(pulledBlock); // Add the Block
-        std::cout << "Pulled From Queue" << std::endl;
+void Bag::pullFromQueue(BlockQueue& blockQueue) {
+    if (blockQueue.getLength() > 0) { 
+        if (SavedQueue.size() < 2) {
+            Block* pulledBlock = blockQueue.dequeue();
+            SavedQueue.push(pulledBlock);
+            std::cout << "Pulled From Queue" << std::endl;
+        }
+        else {
+            std::cout << "Cannot store more than 2 blocks in the saved queue." << std::endl;
+        }
     }
 }
 
-void Bag::AddToQueue(std::queue<Block*>& initialQueue) {
-    if (!initialQueue.empty()) {
-        Block* pulledBlock = SavedQueue.front();
-        SavedQueue.pop();
-        initialQueue.push(pulledBlock);
-        std::cout << "Added From Queue" << std::endl;
+void Bag::AddToQueue(BlockQueue& blockQueue) {
+    if (!SavedQueue.empty()) {  
+        Block* savedBlock = SavedQueue.front();  
+        SavedQueue.pop();  
+        blockQueue.enqueue(savedBlock);  
+        std::cout << "Added Back to Queue" << std::endl;
     }
 }

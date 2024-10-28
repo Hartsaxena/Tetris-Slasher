@@ -16,7 +16,7 @@ public:
 class BlockQueue {
 public:
     BlockQueue();
-    ~BlockQueue();  // Only declare the destructor here
+    ~BlockQueue(); 
 
     void enqueue(Block* val);
     Block* dequeue();

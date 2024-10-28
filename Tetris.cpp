@@ -14,36 +14,37 @@ BlockQueue::~BlockQueue() {
     while (curr != nullptr) {
         BlockQueueNode* last = curr;
         curr = curr->next;
-        delete last->val; // Delete the allocated Block
+        delete last->val; // Delete the Block gaming
         delete last;
     }
 }
 
 void BlockQueue::enqueue(Block* val) {
-    if (first == nullptr) { // First entry in list
-        first = new BlockQueueNode(val);
-        last = first;
+    BlockQueueNode* newFirst = new BlockQueueNode(val);
+
+    newFirst->next = first;
+
+    first = newFirst;
+
+    if (last == nullptr) {
+        last = newFirst;
     }
-    else {
-        BlockQueueNode* newLast = new BlockQueueNode(val);
-        last->next = newLast;
-        last = newLast;
-    }
+
     length++;
 }
 
 Block* BlockQueue::dequeue() {
-    if (this->first == nullptr) {  // Check if the queue is empty
+    if (this->first == nullptr) {  
         std::cout << "Queue is empty, generating new blocks...\n";
-        refillQueue();              // Call to refill the queue
+        refillQueue();
     }
 
-    Block* val = this->first->val;  // Retrieve the value at the front
-    BlockQueueNode* temp = this->first;  // Store the current front node
-    this->first = this->first->next;  // Move the front pointer to the next node
-    delete temp;  // Delete the old front node to free memory
-    this->length--;  // Decrease the queue length
-    return val;  // Return the dequeued block
+    Block* val = this->first->val;  
+    BlockQueueNode* temp = this->first;  
+    this->first = this->first->next;  
+    delete temp;  
+    this->length--;  
+    return val;  
 }
 
 void BlockQueue::generateBag() {
@@ -63,7 +64,7 @@ void BlockQueue::generateBag() {
 
 void BlockQueue::fillQueueFromBag() {
     for (BlockType type : blockBag) {
-        Block* newBlock = new Block(type); // Dynamically allocate Block
+        Block* newBlock = new Block(type); 
         enqueue(newBlock);
     }
 }

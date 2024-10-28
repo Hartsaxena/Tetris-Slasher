@@ -23,9 +23,9 @@ public:
     Block* getNextBlock();
 
     // pull a Block from the initial Queue to store
-    void pullFromQueue(std::queue<Block*>& initialQueue);
+    void pullFromQueue(BlockQueue& blockQueue);
 
-    void AddToQueue(std::queue<Block*>& initialQueue);
+    void AddToQueue(BlockQueue& initialQueue);
 
 private:
     std::queue<Block*> SavedQueue;
