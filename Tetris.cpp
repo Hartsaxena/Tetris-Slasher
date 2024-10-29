@@ -112,9 +112,7 @@ bool TetrisGrid::rotatePiece() {
 
     // Check if the new rotated state causes a collision
     if (!(checkCollision() || checkWallCollision())) {
-
         // No collision, rotation successful
-        currentPieceState = currentPiece->getCurrentState();
         return true;
     }
 
