@@ -107,12 +107,16 @@ bool TetrisGrid::rotatePiece() {
     // Check if the new rotated state causes a collision
     if (!checkCollision() || !checkWallCollision()) {
         // No collision, rotation successful
+        currentPieceState = currentPiece->getCurrentState();
         return true;
     }
-    // Collision detected,  revert to the old rotational state
-    while (currentPiece->getCurrentState() != oldState) {
-        currentPiece->rotate();  // Rotate back 
+    else {
+        // Collision detected,  revert to the old rotational state
+        while (currentPiece->getCurrentState() != oldState) {
+            currentPiece->rotate();  // Rotate back 
+        }
     }
+    currentPieceState = currentPiece->getCurrentState();
     return false;
 }
 
@@ -203,12 +207,12 @@ void TetrisGrid::render() {
     for (int y = 0; y < GRID_HEIGHT; y++) {
         for (int x = 0; x < GRID_WIDTH; x++) {
             if (grid[y][x] != 0) { // If not empty
-                Rectangle rect = { x * 30, y * 30, 30, 30, Color{WHITE} }; // Example color for filled for now
+                Rectangle rect = { x * 30, y * 30, 30, 30, Color{GRAY} };// Example color for filled for now
                 canvas->DrawRect(&rect);
             }
             else {
-                Rectangle rect = { x * 30, y * 30, 30, 30, Color{BLUE} }; // Example color for filled for now
-                canvas->DrawRect(&rect);
+                Rectangle emptyrect{ x * 30, y * 30, 30, 30, Color{WHITE} };
+                canvas->DrawEmptyRect(&emptyrect);
             }
         }
     }
@@ -217,7 +221,7 @@ void TetrisGrid::render() {
     for (int row = 0; row < 4; row++) {
         for (int col = 0; col < 4; col++) {
             if (RotationalStates::getCell(currentPieceState, row, col)) {
-                Rectangle rect = { (piecePosition.x + col) * 30, (piecePosition.y + row) * 30, 30, 30, Color{RED} }; // Example color for now
+                Rectangle rect = { (piecePosition.x + col) * 30, (piecePosition.y + row) * 30, 30, 30, Color{GREEN} }; // Example color for now
                 canvas->DrawRect(&rect);
             }
         }
@@ -271,7 +275,6 @@ bool TetrisGrid::checkWallCollision() {
 
 
 int TetrisGrid::pointCalculator(int lineAmount) {
-    int pointCount = 0;
     if (lineAmount == 1) {
         pointCount += (lineAmount * 100);
     }

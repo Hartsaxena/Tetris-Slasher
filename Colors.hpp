@@ -11,6 +11,8 @@ typedef struct Color {
 
 const Color BLACK = { 0, 0, 0, 255 };
 const Color WHITE = { 255, 255, 255, 255 };
+const Color GRAY = { 150, 150, 150, 255 };
+const Color GHOST = { 150, 150, 150, 125 };
 const Color RED = { 255, 0, 0, 255 };
 const Color GREEN = { 0, 255, 0, 255 };
 const Color BLUE = { 0, 0, 255, 255 };

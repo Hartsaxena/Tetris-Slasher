@@ -31,7 +31,7 @@ public:
     bool getGridCell(int cellX, int cellY) const { return this->grid[cellY][cellX]; }
     void echoState() const;
 
-    int pointCount;
+    int pointCount = 0;
     int lineFilled;
 
 private:

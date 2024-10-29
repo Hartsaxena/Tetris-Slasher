@@ -37,9 +37,12 @@ int main(int argc, char* argv[]) {
         }
         if (inputter.getKeyPress(SDL_SCANCODE_W) || inputter.getKeyPress(SDL_SCANCODE_R)) {
             std::cout << "W or R pressed. Rotate.\n";
+
             grid.rotatePiece(); // Rotate
         }
 
+        
+        canvas.displayInt(grid.pointCount, 30);
         canvas.BlankScreen();
         grid.render();
         frontend.PresentRenderer();
