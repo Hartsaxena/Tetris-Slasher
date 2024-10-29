@@ -47,7 +47,7 @@ Block* BlockQueue::dequeue() {
     return val;  
 }
 
-void BlockQueue::generateBag() {
+void BlockQueue::generateBag() { // generate the bazg w/ 14 pieces
     blockBag = {
         I_BLOCK, I_BLOCK,
         O_BLOCK, O_BLOCK,
