@@ -18,22 +18,22 @@ FrontendManager::FrontendManager(int screenW, int screenH, int fps, const std::s
     this->screenH = screenH;
     this->fps = fps;
     this->windowTitle = windowTitle;
-  
+
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) { // Initialize SDL
-        std::cout<<"Failed to initialize SDL.\n";
-        std::cout<<SDL_GetError();
+        std::cout << "Failed to initialize SDL.\n";
+        std::cout << SDL_GetError();
         SDL_Quit();
         exit(1);
     }
 
     this->window = SDL_CreateWindow(windowTitle.c_str(),
-                                    SDL_WINDOWPOS_UNDEFINED,
-                                    SDL_WINDOWPOS_UNDEFINED,
-                                    screenW, screenH,
-                                    SDL_WINDOW_SHOWN);
+        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED,
+        screenW, screenH,
+        SDL_WINDOW_SHOWN);
     if (this->window == NULL) {
-        std::cout<<"FATAL ERROR: Window could not be displayed.\n";
-        std::cout<<SDL_GetError();
+        std::cout << "FATAL ERROR: Window could not be displayed.\n";
+        std::cout << SDL_GetError();
         SDL_Quit();
         exit(1); // Quit the program
     }
@@ -84,7 +84,7 @@ InputManager::InputManager()
 
     this->inputEvent = new SDL_Event;
     if (this->inputEvent == NULL) {
-        std::cout<<"Failed to allocate memory for input event data.\n";
+        std::cout << "Failed to allocate memory for input event data.\n";
         exit(1);
     }
 
@@ -117,39 +117,39 @@ bool InputManager::HandleInputs()
         switch (inputEvent->type) {
 
             // Key presses
-            case SDL_KEYDOWN: {
-                this->inputKeyStates[scancode] = true;
-                this->inputKeyPresses.push_back(scancode);
-                break;
-            }
-            case SDL_KEYUP: {
-                this->inputKeyStates[scancode] = false;
-                break;
-            }
-            
-            // Mouse movement / presses
-            case SDL_MOUSEBUTTONDOWN: {
-                this->mouseState->ButtonStates[inputEvent->button.button] = true;
-                break;
-            }
-            case SDL_MOUSEBUTTONUP: {
-                this->mouseState->ButtonStates[inputEvent->button.button] = false;
-                break;
-            }
-            case SDL_MOUSEMOTION: {
-                this->mouseState->x = inputEvent->motion.x;
-                this->mouseState->y = inputEvent->motion.y;
-                break;
-            }
+        case SDL_KEYDOWN: {
+            this->inputKeyStates[scancode] = true;
+            this->inputKeyPresses.push_back(scancode);
+            break;
+        }
+        case SDL_KEYUP: {
+            this->inputKeyStates[scancode] = false;
+            break;
+        }
 
-            // Exiting game
-            case SDL_QUIT: {
-                IsRunning = false;
-                break;
-            }
-            default: {
-                break;
-            }
+                      // Mouse movement / presses
+        case SDL_MOUSEBUTTONDOWN: {
+            this->mouseState->ButtonStates[inputEvent->button.button] = true;
+            break;
+        }
+        case SDL_MOUSEBUTTONUP: {
+            this->mouseState->ButtonStates[inputEvent->button.button] = false;
+            break;
+        }
+        case SDL_MOUSEMOTION: {
+            this->mouseState->x = inputEvent->motion.x;
+            this->mouseState->y = inputEvent->motion.y;
+            break;
+        }
+
+                            // Exiting game
+        case SDL_QUIT: {
+            IsRunning = false;
+            break;
+        }
+        default: {
+            break;
+        }
         }
     }
     return IsRunning;

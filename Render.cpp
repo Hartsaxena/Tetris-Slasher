@@ -49,6 +49,13 @@ void Canvas::DrawRect(Rectangle* rect) const
     SDL_RenderFillRect(renderer, &(rect->rect));
 }
 
+void Canvas::DrawEmptyRect(Rectangle* emptyrect) const
+{
+    Color color = emptyrect->color;
+    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.alpha);
+    SDL_RenderDrawRect(renderer, &(emptyrect->rect));
+}
+
 void Canvas::renderDigit(int digit, int x, int y, int size) {
     // Color for the numbers (white)
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);

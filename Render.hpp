@@ -43,7 +43,7 @@ public:
     void displayInt(int number, int size);
     void BlitSurface(Surface* surface, Position position) {};
 
-    
+    void DrawEmptyRect(Rectangle* emptyrect) const;
 
 private:
     SDL_Renderer* renderer;

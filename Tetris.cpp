@@ -6,41 +6,41 @@
 #include "Colors.hpp"
 
 BlockQueue::~BlockQueue() {
-	BlockQueueNode* curr = first;
-	BlockQueueNode* last;
-	while (curr != nullptr) {
-		last = curr;
-		curr = curr->next;
-		delete last;
-	}
+    BlockQueueNode* curr = first;
+    BlockQueueNode* last;
+    while (curr != nullptr) {
+        last = curr;
+        curr = curr->next;
+        delete last;
+    }
 }
 
 void BlockQueue::enqueue(Block val) {
-	if (this->first == nullptr) { // First entry in list
-		this->first = new BlockQueueNode(val);
-		this->last = this->first;
-		this->last->next = nullptr;
-		return;
-	}
+    if (this->first == nullptr) { // First entry in list
+        this->first = new BlockQueueNode(val);
+        this->last = this->first;
+        this->last->next = nullptr;
+        return;
+    }
 
-	BlockQueueNode* newLast = new BlockQueueNode(val);
-	this->last->next = newLast;
-	this->last = newLast;
-	this->length++; 
+    BlockQueueNode* newLast = new BlockQueueNode(val);
+    this->last->next = newLast;
+    this->last = newLast;
+    this->length++;
 }
 
 Block BlockQueue::dequeue() {
-	if (this->last == nullptr) {
-		std::cout << "Can't dequeue from empty queue!\n";
-		exit(-1);
-	}
+    if (this->last == nullptr) {
+        std::cout << "Can't dequeue from empty queue!\n";
+        exit(-1);
+    }
 
-	Block val = this->first->val;
-	BlockQueueNode* temp = this->first;
-	this->first = this->first->next;
-	delete temp;
-	this->length--;
-	return val;
+    Block val = this->first->val;
+    BlockQueueNode* temp = this->first;
+    this->first = this->first->next;
+    delete temp;
+    this->length--;
+    return val;
 }
 
 
@@ -61,66 +61,88 @@ TetrisGrid::~TetrisGrid() {
 
 void TetrisGrid::generatePiece() {
     int randomBlockType = rand() % 7; // Randomly select a block type
-    switch (randomBlockType) {
-    case I_BLOCK: currentPiece = new IBlock(); break;
-    case O_BLOCK: currentPiece = new OBlock(); break;
-    case S_BLOCK: currentPiece = new SBlock(); break;
-    case Z_BLOCK: currentPiece = new ZBlock(); break;
-    case L_BLOCK: currentPiece = new LBlock(); break;
-    case T_BLOCK: currentPiece = new TBlock(); break;
-    case J_BLOCK: currentPiece = new JBlock(); break;
-    }
+    currentPiece = new Block(static_cast<BlockType>(randomBlockType));
 
-    currentPieceState = currentPiece->getCurrentState();
     piecePosition = { 4, 0 }; // top of piece grid
     if (checkCollision()) {
         gameOver = true; // Game over if the new piece cannot be placed
     }
 }
 
-/* 
+/*
 Notice: dx and dy represent changes (delta) in those values. For example, moving 2 squares to the right would be dx = 2, dy = 0.
 */
 bool TetrisGrid::movePiece(int dx, int dy) {
-    std::cout << "Checking movepiece collision\n";
     piecePosition.x += dx;
     piecePosition.y += dy;
-    bool collision = (checkCollision() || checkWallCollision());
+    bool wallCollision = checkWallCollision();
+    bool floorCollision = checkFloorCollision();
+    bool collision = checkCollision();
 
-    if (!collision) {
-        return true;
-    }
-    else {
+    if (wallCollision || collision || floorCollision) {
+        if (dy == 0) {
+            std::cout << "";
+        }
+
         piecePosition.x -= dx;
         piecePosition.y -= dy;
+
+        if (floorCollision || (collision && dy != 0)) {
+            // Only place the piece if its touching the floor or if its colliding with the existing structure AND its not moving to the side.
+            placePiece();
+        }
+
         return false;
     }
+
+    return true;
+}
+
+void TetrisGrid::instantDown() {
+    bool status = true;
+    while (status) {
+        status = moveDown();
+    }
+
 }
 
 bool TetrisGrid::rotatePiece() {
     // Save the current piece's rotational state before attempting to rotate
-    RotationalState oldState = currentPiece->getCurrentState();  // Store the old state
-
-    // Rotate the piece
     currentPiece->rotate();
 
     // Check if the new rotated state causes a collision
-    if (!checkCollision() || !checkWallCollision()) {
+    if (!(checkCollision() || checkWallCollision())) {
         // No collision, rotation successful
         return true;
     }
-    // Collision detected,  revert to the old rotational state
-    while (currentPiece->getCurrentState() != oldState) {
-        currentPiece->rotate();  // Rotate back 
-    }
+
+    this->forceRotate();
+
     return false;
+}
+
+
+bool TetrisGrid::forceRotate() {
+    // Force a rotate, but move the block inwards so it fits in the grid.
+
+    // Detect which side of the grid the piece is on (and thus which wall is being collided with)
+    bool closestWall = (GRID_WIDTH - this->currX) < this->currX; // false = left, true = right
+
+    while (checkCollision() || checkWallCollision()) {
+        if (closestWall)
+            moveLeft();
+        else
+            moveRight();
+    }
+
+    return true;
 }
 
 
 void TetrisGrid::placePiece() {
     for (int row = 0; row < 4; row++) {
         for (int col = 0; col < 4; col++) {
-            if (RotationalStates::getCell(currentPieceState, row, col)) {
+            if (RotationalStates::getCell(currentPiece->getCurrentState(), row, col)) {
                 grid[piecePosition.y + row][piecePosition.x + col] = 1; // Mark the grid as filled
             }
         }
@@ -133,9 +155,10 @@ void TetrisGrid::clearLines() {
     int lineFilled = 0;
     for (int y = 0; y < GRID_HEIGHT; y++) {
         lineFilled++;
+
         for (int x = 0; x < GRID_WIDTH; x++) {
             if (grid[y][x] == 0) {
-                lineFilled = false;
+                lineFilled = 0;
                 break;
             }
         }
@@ -185,10 +208,7 @@ bool TetrisGrid::update() {
 
     if (this->frameTimer-- == 0) {
         // Move piece down automatically
-        if (!movePiece(0, 1)) {
-            placePiece(); // Place piece if it colllides
-        }
-
+        moveDown();
         this->frameTimer = maxFrameTimer;
     }
 
@@ -196,17 +216,19 @@ bool TetrisGrid::update() {
 }
 
 void TetrisGrid::render() {
+    // Render points
+    canvas->displayInt(this->pointCount, 30);
 
-    // render grid
+    // Render grid
     for (int y = 0; y < GRID_HEIGHT; y++) {
         for (int x = 0; x < GRID_WIDTH; x++) {
             if (grid[y][x] != 0) { // If not empty
-                Rectangle rect = { x * 30, y * 30, 30, 30, Color{WHITE} }; // Example color for filled for now
+                Rectangle rect = { x * 30, y * 30, 30, 30, Color{GRAY} };// Example color for filled for now
                 canvas->DrawRect(&rect);
             }
             else {
-                Rectangle rect = { x * 30, y * 30, 30, 30, Color{BLUE} }; // Example color for filled for now
-                canvas->DrawRect(&rect);
+                Rectangle emptyrect{ x * 30, y * 30, 30, 30, Color{WHITE} };
+                canvas->DrawEmptyRect(&emptyrect);
             }
         }
     }
@@ -214,7 +236,7 @@ void TetrisGrid::render() {
     // Render the current piece
     for (int row = 0; row < 4; row++) {
         for (int col = 0; col < 4; col++) {
-            if (RotationalStates::getCell(currentPieceState, row, col)) {
+            if (RotationalStates::getCell(currentPiece->getCurrentState(), row, col)) {
                 Rectangle rect = { (piecePosition.x + col) * 30, (piecePosition.y + row) * 30, 30, 30, Color{RED} }; // Example color for now
                 canvas->DrawRect(&rect);
             }
@@ -226,7 +248,7 @@ void TetrisGrid::render() {
 /*
 Returns true if there is collision between the current piece and the grid.
 */
-bool TetrisGrid::checkCollision() {
+bool TetrisGrid::checkCollision() const {
 	RotationalState pieceState = this->currentPiece->getCurrentState();
 	for (int y = 3; y >= 0; y--) {    // Row
 		for (int x = 0; x < 4; x++) { // Column
@@ -238,12 +260,6 @@ bool TetrisGrid::checkCollision() {
 			int gridRelativeX = this->currX + x;
 			int gridRelativeY = this->currY + y;
 
-			//// NOTE: I'm not sure if checking collision with the sides of the grid should be in this method.
-			//// Check collision with sides of grid
-			//(this->checkWallCollision(gridRelativeX, gridRelativeY)) {
-			//	return true;
-			//}
-
 			// Check collision with other grid cells
 			if (this->getGridCell(gridRelativeX, gridRelativeY)) {
 				return true;
@@ -254,7 +270,11 @@ bool TetrisGrid::checkCollision() {
 	return false;
 }
 
-bool TetrisGrid::checkWallCollision() {
+bool TetrisGrid::checkFloorCollision() const {
+    return this->currY < 0;
+}
+
+bool TetrisGrid::checkWallCollision() const {
     RotationalState pieceState = this->currentPiece->getCurrentState();
     for (int y = 3; y >= 0; y--) {    // Row
         for (int x = 0; x < 4; x++) { // Column
@@ -266,9 +286,9 @@ bool TetrisGrid::checkWallCollision() {
             int gridRelativeX = this->currX + x;
             int gridRelativeY = this->currY + y;
 
-            return (gridRelativeX < 0 || gridRelativeX >= GRID_WIDTH);
-
-
+            if (gridRelativeX < 0 || gridRelativeX >= GRID_WIDTH) {
+                return true;
+            }
         }
     }
 
@@ -277,7 +297,6 @@ bool TetrisGrid::checkWallCollision() {
 
 
 int TetrisGrid::pointCalculator(int lineAmount) {
-    int pointCount = 0;
     if (lineAmount == 1) {
         pointCount += (lineAmount * 100);
     }
