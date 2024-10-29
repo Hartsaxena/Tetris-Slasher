@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <type_traits>
 
-enum BlockType {
+typedef enum BlockType {
 	I_BLOCK,
 	O_BLOCK,
 	S_BLOCK,
@@ -11,7 +11,7 @@ enum BlockType {
 	L_BLOCK,
 	T_BLOCK,
 	J_BLOCK,
-};
+} BlockType;
 
 
 /*
@@ -88,7 +88,8 @@ public:
 
 	void push(RotationalState rotationalState);
 	RotationalState getCurr() const { return this->curr->data; }
-	void cycleCurr() { this->curr = this->curr->next; }
+	void cycleCurr() { this->debugNodes(); this->curr = this->curr->next;}
+	void debugNodes();
 
 private:
 	RotationalStateNode* head = nullptr;
@@ -98,90 +99,10 @@ private:
 
 class Block {
 public:
-	void rotate() { RotationalState debugCurr = this->rotationalStates.getCurr();  this->rotationalStates.cycleCurr(); }
-	RotationalState getCurrentState() const { return this->rotationalStates.getCurr(); }
+	Block(BlockType type = T_BLOCK);
+	void rotate() { RotationalState debugCurr = this->rotationalStates.getCurr(); 
+					this->rotationalStates.cycleCurr();
+					debugCurr = this->rotationalStates.getCurr(); }
+	RotationalState getCurrentState() const { return rotationalStates.getCurr(); }
 	RotationalStateList rotationalStates;
-
 };
-
-class IBlock : public Block {
-public:
-	IBlock() {
-		this->rotationalStates = RotationalStateList(
-			RotationalStates::IBlock1,
-			RotationalStates::IBlock2,
-			RotationalStates::IBlock3,
-			RotationalStates::IBlock4
-		);
-	}
-};
-
-class OBlock : public Block {
-public:
-	OBlock() {
-		this->rotationalStates = RotationalStateList(
-			RotationalStates::OBlock1
-		);
-	}
-};
-
-class SBlock : public Block {
-public:
-	SBlock() {
-		this->rotationalStates = RotationalStateList(
-			RotationalStates::SBlock1,
-			RotationalStates::SBlock2,
-			RotationalStates::SBlock3,
-			RotationalStates::SBlock4
-		);
-	}
-};
-
-class ZBlock : public Block {
-public:
-	ZBlock() {
-		this->rotationalStates = RotationalStateList(
-			RotationalStates::ZBlock1,
-			RotationalStates::ZBlock2,
-			RotationalStates::ZBlock3,
-			RotationalStates::ZBlock4
-		);
-	}
-};
-
-class LBlock : public Block {
-public:
-	LBlock() {
-		this->rotationalStates = RotationalStateList(
-			RotationalStates::LBlock1,
-			RotationalStates::LBlock2,
-			RotationalStates::LBlock3,
-			RotationalStates::LBlock4
-		);
-	}
-};
-
-class TBlock : public Block {
-public:
-	TBlock() {
-		this->rotationalStates = RotationalStateList(
-			RotationalStates::TBlock1,
-			RotationalStates::TBlock2,
-			RotationalStates::TBlock3,
-			RotationalStates::TBlock4
-		);
-	}
-};
-
-class JBlock : public Block {
-public:
-	JBlock() {
-		this->rotationalStates = RotationalStateList(
-			RotationalStates::JBlock1,
-			RotationalStates::JBlock2,
-			RotationalStates::JBlock3,
-			RotationalStates::JBlock4
-		);
-	}
-};
-
