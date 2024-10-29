@@ -23,21 +23,25 @@ int main(int argc, char* argv[]) {
         // Handle Events and update keyboard
         isRunning = inputter.HandleInputs();
 
-        if (inputter.getKeyPress(SDL_SCANCODE_A)) {
+        if (inputter.getKeyPress(SDL_SCANCODE_LEFT)) {
             std::cout << "Moving LEFT\n";
             grid.moveLeft(); // Move left
         }
-        if (inputter.getKeyPress(SDL_SCANCODE_D)) {
+        if (inputter.getKeyPress(SDL_SCANCODE_RIGHT)) {
             std::cout << "Moving RIGHT\n";
             grid.moveRight(); // Move right
         }
-        if (inputter.getKeyPress(SDL_SCANCODE_S)) {
+        if (inputter.getKeyState(SDL_SCANCODE_DOWN)) {
             std::cout << "Moving DOWN\n";
             grid.moveDown(); // Move down
         }
-        if (inputter.getKeyPress(SDL_SCANCODE_W) || inputter.getKeyPress(SDL_SCANCODE_R)) {
-            std::cout << "W or R pressed. Rotate.\n";
+        if (inputter.getKeyPress(SDL_SCANCODE_UP) || inputter.getKeyPress(SDL_SCANCODE_R)) {
+            std::cout << "UP or R pressed. Rotate.\n";
             grid.rotatePiece(); // Rotate
+        }
+        if (inputter.getKeyPress(SDL_SCANCODE_SPACE)) {
+            std::cout << "SPACE pressed. Snap downwards.\n";
+            grid.instantDown();
         }
 
         canvas.BlankScreen();

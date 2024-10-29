@@ -12,19 +12,21 @@ const int GRID_HEIGHT = 20;
 
 class TetrisGrid {
 public:
-    TetrisGrid(Canvas* canvas);
+    explicit TetrisGrid(Canvas* canvas);
     ~TetrisGrid();
     bool update();
     void render();
     void clearLines();
     void generatePiece();
     bool rotatePiece();
+    bool forceRotate();
     bool checkCollision();
     bool checkWallCollision();
     int pointCalculator(int lineAmount);
     bool moveRight() { return movePiece(1, 0); }
     bool moveLeft() { return movePiece(-1, 0); }
     bool moveDown() { return movePiece(0, 1); }
+    void instantDown();
 
     void placePiece();
     bool isGameOver() const;
@@ -37,7 +39,6 @@ public:
 private:
     Canvas* canvas;
     Block* currentPiece;
-    RotationalState currentPieceState;
     int maxFrameTimer = 30;
     int frameTimer = maxFrameTimer;
     int grid[GRID_HEIGHT][GRID_WIDTH]; // Tetris grid
@@ -51,8 +52,6 @@ private:
 };
 
 
-
-
 typedef struct BlockQueueNode {
 	explicit BlockQueueNode(Block val) { this->val = val; }
 
@@ -63,7 +62,7 @@ typedef struct BlockQueueNode {
 class BlockQueue {
 public:
 	template<typename... Blocks>
-	BlockQueue(Blocks... blockData) {
+	explicit BlockQueue(Blocks... blockData) {
 		static_assert((std::is_same_v<Blocks, Block> && ...), "All entries in BlockQueue must be of type Block\n");
 		(this->enqueue(Blocks), ...);
 	}
