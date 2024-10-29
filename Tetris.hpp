@@ -20,8 +20,9 @@ public:
     void generatePiece();
     bool rotatePiece();
     bool forceRotate();
-    bool checkCollision();
-    bool checkWallCollision();
+    bool checkCollision() const;
+    bool checkFloorCollision() const;
+    bool checkWallCollision() const;
     int pointCalculator(int lineAmount);
     bool moveRight() { return movePiece(1, 0); }
     bool moveLeft() { return movePiece(-1, 0); }
@@ -48,7 +49,7 @@ private:
 
     bool gameOver = false;
 
-    bool movePiece(int dx, int dy);
+    bool movePiece(int dx = 0, int dy = 0);
 };
 
 
