@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bag.hpp" />
     <ClInclude Include="Blocks.hpp" />
     <ClInclude Include="Colors.hpp" />
     <ClInclude Include="Front.hpp" />
@@ -27,6 +28,7 @@
     <ClInclude Include="Tetris.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Bag.cpp" />
     <ClCompile Include="Blocks.cpp" />
     <ClCompile Include="Front.cpp" />
     <ClCompile Include="Main.cpp" />

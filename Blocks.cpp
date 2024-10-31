@@ -1,7 +1,6 @@
 #include "Blocks.hpp"
 #include <iostream>
 
-
 /* Get the value of a specific cell(row, col) in the 4x4 grid */
 bool RotationalStates::getCell(RotationalState state, int row, int col) {
 	int index = 15 - (row * 4 + col); // Calculate inverted bit index (0-15)
@@ -10,7 +9,7 @@ bool RotationalStates::getCell(RotationalState state, int row, int col) {
 
 /* Set a specific cell in the 4x4 grid(1 = filled, 0 = empty) */
 void RotationalStates::setCell(RotationalState* state, int row, int col, bool value) {
-	int index = 15 - (row * 4 + col);
+	int index = 15 - (row * 4 + col);   
 	if (value)
 		*state |= (1 << index); // Set the bit to 1
 	else

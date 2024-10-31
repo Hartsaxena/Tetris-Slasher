@@ -71,10 +71,11 @@ namespace RotationalStates {
 }
 
 typedef struct RotationalStateNode { // Circular singly-linked list
-	explicit RotationalStateNode(RotationalState* data) { this->data = *data; }
+    explicit RotationalStateNode(RotationalState* data) { this->data = *data; }
 
-	RotationalState data;
-	RotationalStateNode* next = nullptr;
+    RotationalState data;
+    RotationalStateNode* next = nullptr;
+
 } RotationalStateNode;
 
 class RotationalStateList {
@@ -92,10 +93,19 @@ public:
 	void debugNodes();
 
 private:
+	struct RotationalStateNode {
+		explicit RotationalStateNode(RotationalState data) { this->data = data; }
+
+		RotationalState data;
+		RotationalStateNode* next = nullptr;
+	};
+
+
 	RotationalStateNode* head = nullptr;
 	RotationalStateNode* tail = nullptr;
-	RotationalStateNode* curr = nullptr; // For tracking currently active state
+	RotationalStateNode* curr = nullptr;
 };
+
 
 class Block {
 public:
