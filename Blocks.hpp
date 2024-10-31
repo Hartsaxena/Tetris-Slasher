@@ -93,14 +93,6 @@ public:
 	void debugNodes();
 
 private:
-	struct RotationalStateNode {
-		explicit RotationalStateNode(RotationalState data) { this->data = data; }
-
-		RotationalState data;
-		RotationalStateNode* next = nullptr;
-	};
-
-
 	RotationalStateNode* head = nullptr;
 	RotationalStateNode* tail = nullptr;
 	RotationalStateNode* curr = nullptr;

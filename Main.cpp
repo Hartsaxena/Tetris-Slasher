@@ -21,11 +21,10 @@ int main(int argc, char* argv[]) {
     TetrisGrid grid(&canvas);
     InputManager inputter = InputManager();
     bool isRunning = true;
-
-    // Initializing Game Variables
     Bag bag;
     BlockQueue blockQueue;
-    std::cout << "Block queue length: " << blockQueue.getLength() << std::endl;
+
+
     while (isRunning) {
 
         // Handle Events and update keyboard

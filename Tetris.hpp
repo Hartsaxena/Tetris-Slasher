@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <SDL.h>
 #include <vector>
@@ -6,6 +7,9 @@
 #include "Blocks.hpp"
 #include "Render.hpp"
 #include "Colors.hpp"
+#include <algorithm>
+#include <random>
+
 
 const int GRID_WIDTH = 10;
 const int GRID_HEIGHT = 20;
@@ -52,10 +56,6 @@ private:
     bool movePiece(int dx = 0, int dy = 0);
 };
 
-
-typedef struct BlockQueueNode {
-	explicit BlockQueueNode(Block val) { this->val = val; }
-
 class BlockQueueNode {
 public:
     explicit BlockQueueNode(Block* val) : val(val), next(nullptr) {}
@@ -66,7 +66,7 @@ public:
 class BlockQueue {
 public:
     BlockQueue();
-    ~BlockQueue(); 
+    ~BlockQueue();
 
     void enqueue(Block* val);
     Block* dequeue();

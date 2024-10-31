@@ -6,48 +6,6 @@
 #include "Colors.hpp"
 
 
-BlockQueue::BlockQueue() {
-    generateBag();
-    fillQueueFromBag();
-}
-
-BlockQueue::~BlockQueue() {
-    BlockQueueNode* curr = first;
-    while (curr != nullptr) {
-        BlockQueueNode* last = curr;
-        curr = curr->next;
-        delete last->val; // Delete the Block gaming
-        delete last;
-    }
-}
-
-void BlockQueue::enqueue(Block* val) {
-    BlockQueueNode* newFirst = new BlockQueueNode(val);
-
-    newFirst->next = first;
-
-    first = newFirst;
-
-    if (last == nullptr) {
-        last = newFirst;
-    }
-
-    length++;
-}
-
-Block* BlockQueue::dequeue() {
-    if (this->first == nullptr) {  
-        std::cout << "Queue is empty, generating new blocks...\n";
-        refillQueue();
-    }
-
-    Block val = this->first->val;
-    BlockQueueNode* temp = this->first;
-    this->first = this->first->next;
-    delete temp;
-    this->length--;
-    return val;
-}
 
 
 TetrisGrid::TetrisGrid(Canvas* canvas) {
@@ -255,25 +213,25 @@ void TetrisGrid::render() {
 Returns true if there is collision between the current piece and the grid.
 */
 bool TetrisGrid::checkCollision() const {
-	RotationalState pieceState = this->currentPiece->getCurrentState();
-	for (int y = 3; y >= 0; y--) {    // Row
-		for (int x = 0; x < 4; x++) { // Column
-			bool val = RotationalStates::getCell(pieceState, y, x);
-			if (val == 0) {
-				continue;
-			}
+    RotationalState pieceState = this->currentPiece->getCurrentState();
+    for (int y = 3; y >= 0; y--) {    // Row
+        for (int x = 0; x < 4; x++) { // Column
+            bool val = RotationalStates::getCell(pieceState, y, x);
+            if (val == 0) {
+                continue;
+            }
 
-			int gridRelativeX = this->currX + x;
-			int gridRelativeY = this->currY + y;
+            int gridRelativeX = this->currX + x;
+            int gridRelativeY = this->currY + y;
 
-			// Check collision with other grid cells
-			if (this->getGridCell(gridRelativeX, gridRelativeY)) {
-				return true;
-			}
-		}
-	}
+            // Check collision with other grid cells
+            if (this->getGridCell(gridRelativeX, gridRelativeY)) {
+                return true;
+            }
+        }
+    }
 
-	return false;
+    return false;
 }
 
 bool TetrisGrid::checkFloorCollision() const {
@@ -318,12 +276,48 @@ int TetrisGrid::pointCalculator(int lineAmount) {
     lineFilled = 0;
     return pointCount;
 }
-    Block* val = this->first->val;  
-    BlockQueueNode* temp = this->first;  
-    this->first = this->first->next;  
-    delete temp;  
-    this->length--;  
-    return val;  
+
+BlockQueue::BlockQueue() {
+    generateBag();
+    fillQueueFromBag();
+}
+
+BlockQueue::~BlockQueue() {
+    BlockQueueNode* curr = first;
+    while (curr != nullptr) {
+        BlockQueueNode* last = curr;
+        curr = curr->next;
+        delete last->val; // Delete the Block gaming
+        delete last;
+    }
+}
+
+void BlockQueue::enqueue(Block* val) {
+    BlockQueueNode* newFirst = new BlockQueueNode(val);
+
+    newFirst->next = first;
+
+    first = newFirst;
+
+    if (last == nullptr) {
+        last = newFirst;
+    }
+
+    length++;
+}
+
+Block* BlockQueue::dequeue() {
+    if (this->first == nullptr) {
+        std::cout << "Queue is empty, generating new blocks...\n";
+        refillQueue();
+    }
+
+    Block* val = this->first->val;
+    BlockQueueNode* temp = this->first;
+    this->first = this->first->next;
+    delete temp;
+    this->length--;
+    return val;
 }
 
 void BlockQueue::generateBag() { // generate the bazg w/ 14 pieces
@@ -343,25 +337,12 @@ void BlockQueue::generateBag() { // generate the bazg w/ 14 pieces
 
 void BlockQueue::fillQueueFromBag() {
     for (BlockType type : blockBag) {
-        Block* newBlock = new Block(type); 
+        Block* newBlock = new Block(type);
         enqueue(newBlock);
     }
 }
 
 void BlockQueue::refillQueue() {
-    generateBag();           
-    fillQueueFromBag();     
-}
-
-std::string blockTypeToString(BlockType type) {
-    switch (type) {
-    case I_BLOCK: return "I_BLOCK";
-    case O_BLOCK: return "O_BLOCK";
-    case S_BLOCK: return "S_BLOCK";
-    case Z_BLOCK: return "Z_BLOCK";
-    case L_BLOCK: return "L_BLOCK";
-    case T_BLOCK: return "T_BLOCK";
-    case J_BLOCK: return "J_BLOCK";
-    default: return "UNKNOWN_BLOCK";
-    }
+    generateBag();
+    fillQueueFromBag();
 }
