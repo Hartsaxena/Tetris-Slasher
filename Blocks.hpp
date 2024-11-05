@@ -23,6 +23,13 @@ typedef enum PieceType {
 
 class Block {
 public:
+    /**@brief Constructs a new Block object.
+	 *
+     * @param x The x position of the block.
+     * @param y The y position of the block.
+     * @param immortal Whether the block is immortal (default is false).
+	 */
+    Block(int x, int y, bool immortal = false);
 	Block() { x = 0; y = 0; immortal = false; }
 	Block(int x, int y, bool immortal = false) { this->x = x; this->y = y; this->immortal = immortal; }
 
@@ -30,24 +37,34 @@ public:
 	bool immortal = false;
 };
 
+/**
+ * @brief Represents the rotational state of a piece in Tetris.
+ */
 typedef struct RotationalState {
 	Block blocks[4];
 } RotationalState;
 
+/**
+ * @brief Responsible for managing all 4 rotational states of a single type of piece in Tetris (e.g., L-Piece).
+ */
 class Piece {
 public:
 
 	int x, y;
 
-	/*
-	x = x position of the piece's left-most tile (on the 4x4 available grid)
-	y = y position of the same tile
-	type = type of block to create
-	*/
-	Piece(int x, int y, PieceType type = O_PIECE);
+	/**
+	 * @brief Constructs a new Piece object
+	 * @param x The 'x' position of the piece's left-most tile (on the 4x4 available grid).
+	 * @param y The 'y' position of the piece's left-most tile (on the 4x4 avaiilable grid).
+	 * @param type The type of block to create (default is O_PIECE).
+	 */
+	explicit Piece(int x, int y, PieceType type = O_PIECE);
 
+	/**
+	 * @brief Rotates the Piece object 90 degrees clockwise.
+	 */
 	void rotate() { currentRotation = (currentRotation + 1) % 4; }
-	RotationalState* getCurrentState() const { return &rotateStates[currentRotation]; }
+    RotationalState getCurrentState() const { return rotateStates[currentRotation]; }
 
 private:
 	int currentRotation = 0;
@@ -58,6 +75,12 @@ private:
 namespace Rotations {
 	// Pieces for each rotational state of each block type
 
+	/**
+	 * @brief Casts a block to an absolute position based on where it's topleft corner is.
+	 * @param block pointer to a Block object, to be casted.
+	 * @param x top-left x position
+	 * @param y top-left y position
+	 */
 	void castBlock(Block* block, int x, int y);
 
 	// I Block
