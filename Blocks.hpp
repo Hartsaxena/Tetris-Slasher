@@ -3,106 +3,263 @@
 #include <cstdint>
 #include <type_traits>
 
-typedef enum BlockType {
-	I_BLOCK,
-	O_BLOCK,
-	S_BLOCK,
-	Z_BLOCK,
-	L_BLOCK,
-	T_BLOCK,
-	J_BLOCK,
-} BlockType;
+typedef enum PieceType {
+	I_PIECE,
+	O_PIECE,
+	S_PIECE,
+	Z_PIECE,
+	L_PIECE,
+	T_PIECE,
+	J_PIECE,
+} PieceType;
 
 
-/*
-*** A 16-bit integer that represents a 4x4 2D matrix. ***
-* Example: the numbers are the indexes of the integer:
-* 0 0 0 0
-* 1 1 1 0
-* 0 1 0 0
-* 0 0 0 0
-*
-* This matrix represents the rotation of a T-block (Specifically t-block 3)
-* Convert this matrix to binary (from the top left to the bottom right, like you're reading english):
-* 0000 1110 0100 0000
-* Convert binary to decimal: 3648
-*/	
-
-typedef uint16_t RotationalState;
-namespace RotationalStates {
-	bool getCell(RotationalState state, int row, int col);
-	void setCell(RotationalState* state, int row, int col, bool value);
-
-	// Data for rotational states of all pieces.
-	const RotationalState IBlock1 = 3840;
-	const RotationalState IBlock2 = 8738;
-	const RotationalState IBlock3 = 240;
-	const RotationalState IBlock4 = 17476;
-
-	const RotationalState OBlock1 = 52224; // The O-Block only has one orientation, but I'll make 4 variables just in case
-	const RotationalState OBlock2 = 52224;
-	const RotationalState OBlock3 = 52224;
-	const RotationalState OBlock4 = 52224;
-
-	const RotationalState SBlock1 = 27648;
-	const RotationalState SBlock2 = 17952;
-	const RotationalState SBlock3 = 1728;
-	const RotationalState SBlock4 = 35904;
-
-	const RotationalState ZBlock1 = 50688;
-	const RotationalState ZBlock2 = 9792;
-	const RotationalState ZBlock3 = 3168;
-	const RotationalState ZBlock4 = 19584;
-
-	const RotationalState LBlock1 = 11776;
-	const RotationalState LBlock2 = 17504;
-	const RotationalState LBlock3 = 3712;
-	const RotationalState LBlock4 = 50240;
-
-	const RotationalState TBlock1 = 19968;
-	const RotationalState TBlock2 = 17984;
-	const RotationalState TBlock3 = 3648;
-	const RotationalState TBlock4 = 19520;
-
-	const RotationalState JBlock1 = 36352;
-	const RotationalState JBlock2 = 25664;
-	const RotationalState JBlock3 = 3616;
-	const RotationalState JBlock4 = 17600;
-}
-
-typedef struct RotationalStateNode { // Circular singly-linked list
-	explicit RotationalStateNode(RotationalState* data) { this->data = *data; }
-
-	RotationalState data;
-	RotationalStateNode* next = nullptr;
-} RotationalStateNode;
-
-class RotationalStateList {
-public:
-	template<typename... States>
-	RotationalStateList(States... rotationalStates) {
-		static_assert((std::is_same_v<States, RotationalState> && ...),
-			"All entries in RotationStateList must be of type RotationalState\n");
-		(this->push(rotationalStates), ...);
-	}
-
-	void push(RotationalState rotationalState);
-	RotationalState getCurr() const { return this->curr->data; }
-	void cycleCurr() { this->debugNodes(); this->curr = this->curr->next;}
-	void debugNodes();
-
-private:
-	RotationalStateNode* head = nullptr;
-	RotationalStateNode* tail = nullptr;
-	RotationalStateNode* curr = nullptr; // For tracking currently active state
-};
+/* Block Restructuring. Here's my new idea that was proposed in class today:
+* 
+* Store Blocks as objects that represent a single square on the tetris grid.
+* In the TetrisGrid object, store the currently selected piece as an array of 4 instances of Block.
+* Should be simple, right?
+*/
 
 class Block {
 public:
-	Block(BlockType type = T_BLOCK);
-	void rotate() { RotationalState debugCurr = this->rotationalStates.getCurr(); 
-					this->rotationalStates.cycleCurr();
-					debugCurr = this->rotationalStates.getCurr(); }
-	RotationalState getCurrentState() const { return rotationalStates.getCurr(); }
-	RotationalStateList rotationalStates;
+	Block() { x = 0; y = 0; immortal = false; }
+	Block(int x, int y, bool immortal = false) { this->x = x; this->y = y; this->immortal = immortal; }
+
+	int x, y;
+	bool immortal = false;
 };
+
+typedef struct RotationalState {
+	Block blocks[4];
+} RotationalState;
+
+class Piece {
+public:
+
+	int x, y;
+
+	/*
+	x = x position of the piece's left-most tile (on the 4x4 available grid)
+	y = y position of the same tile
+	type = type of block to create
+	*/
+	Piece(int x, int y, PieceType type = O_PIECE);
+
+	void rotate() { currentRotation = (currentRotation + 1) % 4; }
+	RotationalState* getCurrentState() const { return &rotateStates[currentRotation]; }
+
+private:
+	int currentRotation = 0;
+	RotationalState rotateStates[4];
+};
+
+
+namespace Rotations {
+	// Pieces for each rotational state of each block type
+
+	void castBlock(Block* block, int x, int y);
+
+	// I Block
+	const RotationalState I_STATES[4] =
+	{
+		{
+		Block(0, 1),
+		Block(1, 1),
+		Block(2, 1),
+		Block(3, 1)
+		},
+		{
+		Block(2, 0),
+		Block(2, 1),
+		Block(2, 2),
+		Block(2, 3)
+		},
+		{
+		Block(0, 2),
+		Block(1, 2),
+		Block(2, 2),
+		Block(3, 2)
+		},
+		{
+		Block(1, 0),
+		Block(1, 1),
+		Block(1, 2),
+		Block(1, 3)
+		}
+	};
+
+	// J Block
+	const RotationalState J_STATES[4] =
+	{
+		{
+		Block(0, 0),
+		Block(0, 1),
+		Block(1, 1),
+		Block(2, 1)
+		},
+		{
+		Block(1, 0),
+		Block(2, 0),
+		Block(1, 1),
+		Block(1, 2)
+		},
+		{
+		Block(0, 1),
+		Block(1, 1),
+		Block(2, 1),
+		Block(2, 2)
+		},
+		{
+		Block(1, 0),
+		Block(1, 1),
+		Block(1, 2),
+		Block(0, 2)
+		}
+	};
+
+	// L Block
+	const RotationalState L_STATES[4] =
+	{
+		{
+		Block(0, 1),
+		Block(1, 1),
+		Block(2, 1),
+		Block(2, 0)
+		},
+		{
+		Block(1, 0),
+		Block(1, 1),
+		Block(1, 2),
+		Block(2, 2)
+		},
+		{
+		Block(0, 1),
+		Block(0, 2),
+		Block(1, 1),
+		Block(2, 1)
+		},
+		{
+		Block(0, 0),
+		Block(1, 0),
+		Block(1, 1),
+		Block(1, 2)
+		}
+	};
+
+	// S Block
+	const RotationalState S_STATES[4] =
+	{
+		{
+		Block(0, 1),
+		Block(1, 0),
+		Block(1, 1),
+		Block(2, 0)
+		},
+		{
+		Block(1, 0),
+		Block(1, 1),
+		Block(2, 1),
+		Block(2, 2)
+		},
+		{
+		Block(1, 1),
+		Block(0, 2),
+		Block(1, 2),
+		Block(2, 1)
+		},
+		{
+		Block(0, 0),
+		Block(0, 1),
+		Block(1, 1),
+		Block(1, 2)
+		}
+	};
+
+	// T Block
+	const RotationalState T_STATES[4] =
+	{
+		{
+		Block(1, 0),
+		Block(0, 1),
+		Block(1, 1),
+		Block(2, 1)
+		},
+		{
+		Block(1, 0),
+		Block(1, 1),
+		Block(2, 1),
+		Block(1, 2)
+		},
+		{
+		Block(1, 0),
+		Block(1, 1),
+		Block(1, 2),
+		Block(1, 2)
+		},
+		{
+		Block(1, 0),
+		Block(0, 1),
+		Block(1, 1),
+		Block(1, 2)
+		}
+	};
+
+	// Z Block
+	const RotationalState Z_STATES[4] =
+	{
+		{
+		Block(0, 0),
+		Block(1, 0),
+		Block(1, 1),
+		Block(2, 1)
+		},
+		{
+		Block(2, 0),
+		Block(2, 1),
+		Block(1, 1),
+		Block(1, 2)
+		},
+		{
+		Block(0, 1),
+		Block(1, 1),
+		Block(1, 2),
+		Block(2, 2)
+		},
+		{
+		Block(1, 0),
+		Block(0, 1),
+		Block(1, 1),
+		Block(0, 2)
+		}
+	};
+
+	// O Block
+	const RotationalState O_STATES[4] =
+	{
+		{
+		Block(0, 0),
+		Block(1, 0),
+		Block(1, 1),
+		Block(0, 1)
+		},
+		{
+		Block(0, 0),
+		Block(1, 0),
+		Block(1, 1),
+		Block(0, 1)
+		},
+		{
+		Block(0, 0),
+		Block(1, 0),
+		Block(1, 1),
+		Block(0, 1)
+		},
+		{
+		Block(0, 0),
+		Block(1, 0),
+		Block(1, 1),
+		Block(0, 1)
+		}
+	};
+}
