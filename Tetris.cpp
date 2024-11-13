@@ -8,8 +8,9 @@
 
 
 
-TetrisGrid::TetrisGrid(Canvas* canvas) {
+TetrisGrid::TetrisGrid(Canvas* canvas, BlockQueue* queue) {
     this->canvas = canvas;
+    this->blockQueue = queue;
     // Initialize the grid to 0 (empty)
     for (int y = 0; y < GRID_HEIGHT; y++) {
         for (int x = 0; x < GRID_WIDTH; x++) {
@@ -24,12 +25,18 @@ TetrisGrid::~TetrisGrid() {
 }
 
 void TetrisGrid::generatePiece() {
-    int randomBlockType = rand() % 7; // Randomly select a block type
-    currentPiece = new Block(static_cast<BlockType>(randomBlockType));
+    if (blockQueue->isEmpty()) {
+        std::cout << "Queue is empty! Regenerating..." << std::endl;
+        blockQueue->refillQueue();
+    }
 
-    piecePosition = { 4, 0 }; // top of piece grid
+    Block* nextPiece = blockQueue->getFirstBlock();
+    std::cout << nextPiece->getType() << std::endl;
+    currentPiece = blockQueue->dequeue();
+
+    piecePosition = { 4, 0 };
     if (checkCollision()) {
-        gameOver = true; // Game over if the new piece cannot be placed
+        gameOver = true;
     }
 }
 
@@ -186,13 +193,13 @@ void TetrisGrid::render() {
     // Render grid
     for (int y = 0; y < GRID_HEIGHT; y++) {
         for (int x = 0; x < GRID_WIDTH; x++) {
-            if (grid[y][x] != 0) { // If not empty
-                Rectangle rect = { x * 30, y * 30, 30, 30, Color{GRAY} };// Example color for filled for now
+            if (grid[y][x] != 0) {
+                Rectangle rect = { x * 30, y * 30, 30, 30, Color{GRAY} };
                 canvas->DrawRect(&rect);
             }
             else {
-                Rectangle emptyrect{ x * 30, y * 30, 30, 30, Color{WHITE} };
-                canvas->DrawEmptyRect(&emptyrect);
+                Rectangle emptyRect = { x * 30, y * 30, 30, 30, Color{WHITE} };
+                canvas->DrawEmptyRect(&emptyRect);
             }
         }
     }
@@ -201,13 +208,45 @@ void TetrisGrid::render() {
     for (int row = 0; row < 4; row++) {
         for (int col = 0; col < 4; col++) {
             if (RotationalStates::getCell(currentPiece->getCurrentState(), row, col)) {
-                Rectangle rect = { (piecePosition.x + col) * 30, (piecePosition.y + row) * 30, 30, 30, Color{RED} }; // Example color for now
+                Rectangle rect = { (piecePosition.x + col) * 30, (piecePosition.y + row) * 30, 30, 30, Color{RED} };
                 canvas->DrawRect(&rect);
             }
         }
     }
-}
 
+    // Render the next three pieces in the queue
+    std::vector<Block*> nextPieces = blockQueue->peekNextPieces(3);
+    int previewStartX = 400;
+    int previewStartY = 50;
+    int blockSize = 20;
+    int previewSpacing = 100;
+
+    // Clear the preview area
+    Rectangle previewClearRect = { previewStartX, previewStartY, blockSize * 4, previewSpacing * 3, Color{BLACK} };
+    canvas->DrawRect(&previewClearRect);
+
+    for (int i = 0; i < nextPieces.size(); ++i) {
+        Block* piece = nextPieces[i];
+        RotationalState previewState = piece->rotationalStates.getHead()->data;
+
+        int offsetY = previewStartY + i * previewSpacing;
+
+        for (int row = 0; row < 4; row++) {
+            for (int col = 0; col < 4; col++) {
+                if (RotationalStates::getCell(previewState, row, col)) {
+                    Rectangle previewRect = {
+                        previewStartX + col * blockSize,
+                        offsetY + row * blockSize,
+                        blockSize,
+                        blockSize,
+                        Color{RED}
+                    };
+                    canvas->DrawRect(&previewRect);
+                }
+            }
+        }
+    }
+}
 
 /*
 Returns true if there is collision between the current piece and the grid.
@@ -345,4 +384,25 @@ void BlockQueue::fillQueueFromBag() {
 void BlockQueue::refillQueue() {
     generateBag();
     fillQueueFromBag();
+}
+
+std::vector<Block*> BlockQueue::peekNextPieces(int count) {
+    std::vector<Block*> nextPieces;
+    BlockQueueNode* current = first;
+    int i = 0;
+
+    // Collect the next `count` pieces or fewer if the queue is shorter
+    while (current != nullptr && i < count) {
+        nextPieces.push_back(current->val);
+        current = current->next;
+        i++;
+    }
+
+    return nextPieces;
+}
+Block* BlockQueue::getFirstBlock() const {
+    if (first != nullptr) {
+        return first->val;  // Return the first block
+    }
+    return nullptr;
 }

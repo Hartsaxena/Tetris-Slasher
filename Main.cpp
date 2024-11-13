@@ -18,11 +18,11 @@ int main(int argc, char* argv[]) {
 
     FrontendManager frontend(800, 600, 60, "Tetris Game");
     Canvas canvas = Canvas(frontend.renderer);
-    TetrisGrid grid(&canvas);
-    InputManager inputter = InputManager();
-    bool isRunning = true;
     Bag bag;
     BlockQueue blockQueue;
+    TetrisGrid grid(&canvas, &blockQueue);
+    InputManager inputter = InputManager();
+    bool isRunning = true;
 
 
     while (isRunning) {

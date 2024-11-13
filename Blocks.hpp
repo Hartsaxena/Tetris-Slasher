@@ -91,6 +91,7 @@ public:
 	RotationalState getCurr() const { return this->curr->data; }
 	void cycleCurr() { this->debugNodes(); this->curr = this->curr->next;}
 	void debugNodes();
+	RotationalStateNode* getHead() const { return head; }
 
 private:
 	RotationalStateNode* head = nullptr;
@@ -107,4 +108,7 @@ public:
 					debugCurr = this->rotationalStates.getCurr(); }
 	RotationalState getCurrentState() const { return rotationalStates.getCurr(); }
 	RotationalStateList rotationalStates;
+	BlockType getType() const { return type; }
+private:
+	BlockType type;
 };
