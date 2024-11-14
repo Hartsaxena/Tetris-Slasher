@@ -25,7 +25,7 @@ TetrisGrid::~TetrisGrid() {
 }
 
 void TetrisGrid::generatePiece() {
-    if (blockQueue->isEmpty()) {
+    if (blockQueue->getLength() == 3) {
         std::cout << "Queue is empty! Regenerating..." << std::endl;
         blockQueue->refillQueue();
     }
