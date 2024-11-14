@@ -25,40 +25,44 @@ Canvas::Canvas(SDL_Renderer* renderer)
 {
     // Constructor
     this->renderer = renderer;
+	SDL_GetRendererOutputSize(renderer, &xDimension, &yDimension);
 }
 
 
-void Canvas::FillScreenColor(Color color) const
+void Canvas::fillScreenColor(Color color) const
 {
     // Fills the screen with a color.
-    SDL_SetRenderDrawColor(this->renderer, color.r, color.g, color.b, color.alpha);
+	setColor(color);
     SDL_RenderClear(renderer);
 }
 
-void Canvas::BlankScreen() const
+void Canvas::blankScreen() const
 {
     // Fills the screen with black
-    this->FillScreenColor(BLACK);
+    this->fillScreenColor(BLACK);
 }
 
-void Canvas::DrawRect(Rectangle* rect) const
+void Canvas::drawRect(Rectangle* rect) const
 {
-    Color color = rect->color;
-    SDL_RenderDrawRect(renderer, &(rect->rect));
-    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.alpha);
+	this->drawEmptyRect(rect);
     SDL_RenderFillRect(renderer, &(rect->rect));
 }
 
-void Canvas::DrawEmptyRect(Rectangle* emptyrect) const
+void Canvas::drawEmptyRect(Rectangle* emptyRect) const
 {
-    Color color = emptyrect->color;
-    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.alpha);
-    SDL_RenderDrawRect(renderer, &(emptyrect->rect));
+    Color color = emptyRect->color;
+    setColor(color);
+    SDL_RenderDrawRect(renderer, &(emptyRect->rect));
+}
+
+void Canvas::drawLine(Position start, Position end, Color color) const {
+    setColor(color);
+	SDL_RenderDrawLine(renderer, start.x, start.y, end.x, end.y);
 }
 
 void Canvas::renderDigit(int digit, int x, int y, int size) {
     // Color for the numbers (white)
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    setColor(WHITE);
 
     // Array defining which segments of the digit are "on" (1) or "off" (0)
     // Each digit is represented by 7 segments (like a seven-segment display)
@@ -96,7 +100,7 @@ void Canvas::renderDigit(int digit, int x, int y, int size) {
 
 void Canvas::displayInt(int number, int size) {
 
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    setColor(BLACK);
     SDL_RenderClear(renderer);
 
     // Convert the number to a string to break it into individual digits

@@ -24,6 +24,7 @@
     <ClInclude Include="Front.hpp" />
     <ClInclude Include="Render.hpp" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="SDLConnector.hpp" />
     <ClInclude Include="Tetris.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -31,6 +32,7 @@
     <ClCompile Include="Front.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Render.cpp" />
+    <ClCompile Include="SDLConnector.cpp" />
     <ClCompile Include="Tetris.cpp" />
   </ItemGroup>
   <ItemGroup>

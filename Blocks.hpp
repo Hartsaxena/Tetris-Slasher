@@ -1,8 +1,5 @@
 #pragma once
 
-#include <cstdint>
-#include <type_traits>
-
 typedef enum PieceType {
 	I_PIECE,
 	O_PIECE,
@@ -29,7 +26,6 @@ public:
      * @param y The y position of the block.
      * @param immortal Whether the block is immortal (default is false).
 	 */
-    Block(int x, int y, bool immortal = false);
 	Block() { x = 0; y = 0; immortal = false; }
 	Block(int x, int y, bool immortal = false) { this->x = x; this->y = y; this->immortal = immortal; }
 
@@ -37,9 +33,6 @@ public:
 	bool immortal = false;
 };
 
-/**
- * @brief Represents the rotational state of a piece in Tetris.
- */
 typedef struct RotationalState {
 	Block blocks[4];
 } RotationalState;
@@ -50,21 +43,30 @@ typedef struct RotationalState {
 class Piece {
 public:
 
-	int x, y;
+	int x, y; // The absolute position of the piece's top-left corner.
 
 	/**
-	 * @brief Constructs a new Piece object
-	 * @param x The 'x' position of the piece's left-most tile (on the 4x4 available grid).
-	 * @param y The 'y' position of the piece's left-most tile (on the 4x4 avaiilable grid).
+	 * @brief Constructs a new Piece object.
+	 * @param x The 'x' position of the piece's left-most tile.
+	 * @param y The 'y' position of the piece's left-most tile.
 	 * @param type The type of block to create (default is O_PIECE).
 	 */
-	explicit Piece(int x, int y, PieceType type = O_PIECE);
+	explicit Piece(int x = 0, int y = 0, PieceType type = O_PIECE);
 
 	/**
 	 * @brief Rotates the Piece object 90 degrees clockwise.
 	 */
-	void rotate() { currentRotation = (currentRotation + 1) % 4; }
+	void rotate();
+	void moveUp();
+	void moveDown();
+	void moveLeft();
+	void moveRight();
     RotationalState getCurrentState() const { return rotateStates[currentRotation]; }
+	/**
+	 * @brief Gets the 4 blocks with absolute positions.
+	 * @return A vector of Block objects.
+	 */
+	std::vector<Block> getAbsoluteBlocks() const;
 
 private:
 	int currentRotation = 0;
@@ -82,6 +84,7 @@ namespace Rotations {
 	 * @param y top-left y position
 	 */
 	void castBlock(Block* block, int x, int y);
+	RotationalState castRotationalState(const RotationalState* state, int x, int y);
 
 	// I Block
 	const RotationalState I_STATES[4] =
@@ -218,7 +221,7 @@ namespace Rotations {
 		Block(1, 0),
 		Block(1, 1),
 		Block(1, 2),
-		Block(1, 2)
+		Block(0, 1)
 		},
 		{
 		Block(1, 0),

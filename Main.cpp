@@ -8,14 +8,16 @@ Driver file.
 #include "Blocks.hpp"
 #include "Render.hpp" 
 #include "Tetris.hpp"
+#include "SDLConnector.hpp"
 
 int main(int argc, char* argv[]) {
     srand(static_cast<unsigned int>(time(0))); // Seed for random number generation
 
     FrontendManager frontend(800, 600, 60, "Tetris Game");
     Canvas canvas = Canvas(frontend.renderer);
-    TetrisGrid grid(&canvas);
+    TetrisGrid grid = TetrisGrid();
     InputManager inputter = InputManager();
+	SDLConnector connector = SDLConnector(&canvas, &grid);
     bool isRunning = true;
 
     while (isRunning) {
@@ -31,28 +33,30 @@ int main(int argc, char* argv[]) {
             std::cout << "Moving RIGHT\n";
             grid.moveRight(); // Move right
         }
-        if (inputter.getKeyState(SDL_SCANCODE_DOWN)) {
+        if (inputter.getKeyPress(SDL_SCANCODE_DOWN)) {
             std::cout << "Moving DOWN\n";
             grid.moveDown(); // Move down
         }
         if (inputter.getKeyPress(SDL_SCANCODE_UP) || inputter.getKeyPress(SDL_SCANCODE_R)) {
             std::cout << "UP or R pressed. Rotate.\n";
-            grid.rotatePiece(); // Rotate
+            grid.rotate(); // Rotate
         }
         if (inputter.getKeyPress(SDL_SCANCODE_SPACE)) {
             std::cout << "SPACE pressed. Snap downwards.\n";
-            grid.instantDown();
+            grid.snapDown();
         }
 
         
-        canvas.displayInt(grid.pointCount, 30);
-        canvas.BlankScreen();
-        grid.render();
+        //canvas.displayInt(grid.pointCount, 30);
+        connector.clear();
+        connector.render();
         frontend.PresentRenderer();
-        if (!grid.update()) {
-            std::cout << "ERROR: Grid Update returned false.\n";
-            return 1;
+        grid.update();
+        if (grid.getGameOver()) {
+            std::cout << "Game Over\n";
+            isRunning = false;
         }
+
         frontend.PauseDelay();
     }
     return 0;
