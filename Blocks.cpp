@@ -40,7 +40,7 @@ void RotationalStateList::debugNodes() {
 	std::cout << "\nCurrent Node: "<<this->curr->data<<"\n";
 }
 
-Block::Block(BlockType type) {
+Block::Block(BlockType type) : type(type) {
 	switch (type) {
 	case I_BLOCK: {
 		this->rotationalStates = RotationalStateList(

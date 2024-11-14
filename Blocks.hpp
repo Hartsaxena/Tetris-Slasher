@@ -26,7 +26,7 @@ typedef enum BlockType {
 * Convert this matrix to binary (from the top left to the bottom right, like you're reading english):
 * 0000 1110 0100 0000
 * Convert binary to decimal: 3648
-*/	
+*/
 
 typedef uint16_t RotationalState;
 namespace RotationalStates {
@@ -71,10 +71,10 @@ namespace RotationalStates {
 }
 
 typedef struct RotationalStateNode { // Circular singly-linked list
-    explicit RotationalStateNode(RotationalState* data) { this->data = *data; }
+	explicit RotationalStateNode(RotationalState* data) { this->data = *data; }
 
-    RotationalState data;
-    RotationalStateNode* next = nullptr;
+	RotationalState data;
+	RotationalStateNode* next = nullptr;
 
 } RotationalStateNode;
 
@@ -89,7 +89,7 @@ public:
 
 	void push(RotationalState rotationalState);
 	RotationalState getCurr() const { return this->curr->data; }
-	void cycleCurr() { this->debugNodes(); this->curr = this->curr->next;}
+	void cycleCurr() { this->debugNodes(); this->curr = this->curr->next; }
 	void debugNodes();
 
 private:
@@ -99,12 +99,43 @@ private:
 };
 
 
+
 class Block {
 public:
 	Block(BlockType type = T_BLOCK);
-	void rotate() { RotationalState debugCurr = this->rotationalStates.getCurr(); 
-					this->rotationalStates.cycleCurr();
-					debugCurr = this->rotationalStates.getCurr(); }
+
+	void rotate() {
+		RotationalState debugCurr = this->rotationalStates.getCurr();
+		this->rotationalStates.cycleCurr();
+		debugCurr = this->rotationalStates.getCurr();
+	}
+
 	RotationalState getCurrentState() const { return rotationalStates.getCurr(); }
+
+	BlockType getType() const { return type; }
+
+private:
+	BlockType type;
 	RotationalStateList rotationalStates;
+
+	static RotationalStateList getRotationalStatesForType(BlockType type) {
+		switch (type) {
+		case I_BLOCK:
+			return RotationalStateList(RotationalStates::IBlock1, RotationalStates::IBlock2, RotationalStates::IBlock3, RotationalStates::IBlock4);
+		case O_BLOCK:
+			return RotationalStateList(RotationalStates::OBlock1, RotationalStates::OBlock2, RotationalStates::OBlock3, RotationalStates::OBlock4);
+		case S_BLOCK:
+			return RotationalStateList(RotationalStates::SBlock1, RotationalStates::SBlock2, RotationalStates::SBlock3, RotationalStates::SBlock4);
+		case Z_BLOCK:
+			return RotationalStateList(RotationalStates::ZBlock1, RotationalStates::ZBlock2, RotationalStates::ZBlock3, RotationalStates::ZBlock4);
+		case L_BLOCK:
+			return RotationalStateList(RotationalStates::LBlock1, RotationalStates::LBlock2, RotationalStates::LBlock3, RotationalStates::LBlock4);
+		case T_BLOCK:
+			return RotationalStateList(RotationalStates::TBlock1, RotationalStates::TBlock2, RotationalStates::TBlock3, RotationalStates::TBlock4);
+		case J_BLOCK:
+			return RotationalStateList(RotationalStates::JBlock1, RotationalStates::JBlock2, RotationalStates::JBlock3, RotationalStates::JBlock4);
+		default:
+			return RotationalStateList(RotationalStates::TBlock1);
+		}
+	}
 };
