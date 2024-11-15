@@ -63,14 +63,12 @@ void Bag::pullFromQueue(BlockQueue* blockQueue) {
 }
 
 void Bag::AddToQueue(BlockQueue& blockQueue) {
-    // Step 1: Enqueue the currentBlock from TetrisGrid (this is the "current piece" in play)
     if (tetrisGrid != nullptr && tetrisGrid->nextBlock != nullptr) {
         Block* currentBlock = tetrisGrid->nextBlock;
         blockQueue.enqueue(currentBlock);
         std::cout << "Added Current Block to Queue: " << currentBlock->getType() << std::endl;
     }
 
-    // Step 2: Enqueue the saved block from SavedQueue
     if (!SavedQueue.empty()) {
         Block* savedBlock = SavedQueue.front();
         SavedQueue.pop();

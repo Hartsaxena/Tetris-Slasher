@@ -43,8 +43,6 @@ void TetrisGrid::generatePiece() {
 }
 
 
-
-
 /*
 Notice: dx and dy represent changes (delta) in those values. For example, moving 2 squares to the right would be dx = 2, dy = 0.
 */
