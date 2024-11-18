@@ -58,14 +58,21 @@ public:
     void generatePiece();
     bool rotatePiece();
     bool forceRotate();
+
     bool checkCollision() const;
     bool checkFloorCollision() const;
     bool checkWallCollision() const;
+    bool checkGhostCollision() const;
+
     int pointCalculator(int lineAmount);
+
     bool moveRight() { return movePiece(1, 0); }
     bool moveLeft() { return movePiece(-1, 0); }
     bool moveDown() { return movePiece(0, 1); }
     void instantDown();
+
+
+    Position calculateLandingPosition();
 
     void placePiece();
     bool isGameOver() const;
@@ -82,9 +89,11 @@ private:
     int maxFrameTimer = 30;
     int frameTimer = maxFrameTimer;
     int grid[GRID_HEIGHT][GRID_WIDTH]; // Tetris grid
+    Position ghostPosition; // Position of ghost of piece at bottom of grid
     Position piecePosition; // Current position of the piece
     int& currX = piecePosition.x;
     int& currY = piecePosition.y;
+    int& ghostY = ghostPosition.y;
 
     bool gameOver = false;
 

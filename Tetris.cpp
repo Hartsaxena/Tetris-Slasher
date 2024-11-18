@@ -35,6 +35,7 @@ void TetrisGrid::generatePiece() {
     currentPiece = blockQueue->dequeue();
 
     piecePosition = { 4, 0 };
+    ghostPosition = { 4, 0 };
     if (checkCollision()) {
         gameOver = true;
     }
@@ -180,6 +181,7 @@ bool TetrisGrid::update() {
     if (this->frameTimer-- == 0) {
         // Move piece down automatically
         moveDown();
+        ghostPosition = calculateLandingPosition();
         this->frameTimer = maxFrameTimer;
     }
 
@@ -213,7 +215,22 @@ void TetrisGrid::render() {
             }
         }
     }
-
+    // Render the ghosty piece
+    Position ghostPosition = calculateLandingPosition();
+    for (int row = 0; row < 4; row++) {
+        for (int col = 0; col < 4; col++) {
+            if (RotationalStates::getCell(currentPiece->getCurrentState(), row, col)) {
+                Rectangle ghostRect = {
+                    (ghostPosition.x + col) * 30,
+                    (ghostPosition.y + row) * 30,
+                    30,
+                    30,
+                    Color{192, 192, 192, 128} // Light gray with transparency
+                };
+                canvas->DrawRect(&ghostRect);
+            }
+        }
+    }
     // Render the next three pieces in the queue
     std::vector<Block*> nextPieces = blockQueue->peekNextPieces(3);
     int previewStartX = 400;
@@ -273,6 +290,32 @@ bool TetrisGrid::checkCollision() const {
     return false;
 }
 
+
+bool TetrisGrid::checkGhostCollision() const {
+    RotationalState pieceState = this->currentPiece->getCurrentState();
+    for (int row = 0; row < 4; row++) {    // Row
+        for (int col = 0; col < 4; col++) { // Column
+            bool cell = RotationalStates::getCell(pieceState, row, col);
+            if (!cell) {
+                continue;
+            }
+
+            int ghostRelativeX = ghostPosition.x + col;
+            int ghostRelativeY = ghostPosition.y + row;
+
+
+            // Check if out of bounds or if there is a filled cell at the grid position
+            if (ghostRelativeX < 0 || ghostRelativeX >= GRID_WIDTH || this->ghostY < 0 || (this->getGridCell(ghostRelativeX, ghostRelativeY))) {
+                 return true;
+            }
+            return false;
+        }
+    }
+}
+          
+
+
+
 bool TetrisGrid::checkFloorCollision() const {
     return this->currY < 0;
 }
@@ -315,6 +358,22 @@ int TetrisGrid::pointCalculator(int lineAmount) {
     lineFilled = 0;
     return pointCount;
 }
+
+Position TetrisGrid::calculateLandingPosition() {
+    ghostPosition = piecePosition;
+
+    // Move down until a collision is detected
+    while (!checkGhostCollision()) {
+        ghostPosition.y += 1; // Move the ghost piece down
+    }
+
+    ghostPosition.y -= 2;
+    return ghostPosition;
+}
+
+
+
+// this is where TetrisGrid ends and BlockQueue Starts
 
 BlockQueue::BlockQueue() {
     generateBag();
