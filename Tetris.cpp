@@ -4,14 +4,14 @@
 #include "Front.hpp"
 #include "Render.hpp"
 #include "Colors.hpp"
+#include "Bag.hpp"
 
 
 
-
-TetrisGrid::TetrisGrid(Canvas* canvas, BlockQueue* queue) {
+TetrisGrid::TetrisGrid(Canvas* canvas, BlockQueue* blockQueue) {
     this->canvas = canvas;
-    this->blockQueue = queue;
-    // Initialize the grid to 0 (empty)
+    this->blockQueue = blockQueue;  
+    this->bag = bag;
     for (int y = 0; y < GRID_HEIGHT; y++) {
         for (int x = 0; x < GRID_WIDTH; x++) {
             grid[y][x] = 0; // 0 means empty
@@ -19,6 +19,7 @@ TetrisGrid::TetrisGrid(Canvas* canvas, BlockQueue* queue) {
     }
     generatePiece();
 }
+
 
 TetrisGrid::~TetrisGrid() {
     delete currentPiece; // Clean up the current piece
@@ -40,6 +41,7 @@ void TetrisGrid::generatePiece() {
         gameOver = true;
     }
 }
+
 
 /*
 Notice: dx and dy represent changes (delta) in those values. For example, moving 2 squares to the right would be dx = 2, dy = 0.
@@ -121,6 +123,7 @@ void TetrisGrid::placePiece() {
     }
     clearLines(); // clears full filled line on grid
     generatePiece(); // gives new piece when placed
+    bag->resetHoldStatus();
 }
 
 void TetrisGrid::clearLines() {
@@ -375,7 +378,12 @@ Position TetrisGrid::calculateLandingPosition() {
 
 // this is where TetrisGrid ends and BlockQueue Starts
 
+void TetrisGrid::setBag(Bag* bag) {
+    this->bag = bag;
+}
+
 BlockQueue::BlockQueue() {
+    std::cout << "CREATING A NEW BLOCKQ" << std::endl;
     generateBag();
     fillQueueFromBag();
 }
@@ -388,6 +396,7 @@ BlockQueue::~BlockQueue() {
         delete last->val; // Delete the Block gaming
         delete last;
     }
+
 }
 
 void BlockQueue::enqueue(Block* val) {
@@ -415,8 +424,20 @@ Block* BlockQueue::dequeue() {
     this->first = this->first->next;
     delete temp;
     this->length--;
+
+    std::cout << "Dequeuing block: " << val->getType() << "\n";
+
+    std::cout << "Current BlockQueue state: ";
+    BlockQueueNode* current = this->first;
+    while (current != nullptr) {
+        std::cout << current->val->getType() << " ";
+        current = current->next;
+    }
+    std::cout << std::endl;
+
     return val;
 }
+
 
 void BlockQueue::generateBag() { // generate the bazg w/ 14 pieces
     blockBag = {
@@ -439,6 +460,7 @@ void BlockQueue::fillQueueFromBag() {
         enqueue(newBlock);
     }
 }
+
 
 void BlockQueue::refillQueue() {
     generateBag();

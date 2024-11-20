@@ -26,7 +26,7 @@ typedef enum BlockType {
 * Convert this matrix to binary (from the top left to the bottom right, like you're reading english):
 * 0000 1110 0100 0000
 * Convert binary to decimal: 3648
-*/	
+*/
 
 typedef uint16_t RotationalState;
 namespace RotationalStates {
@@ -71,10 +71,10 @@ namespace RotationalStates {
 }
 
 typedef struct RotationalStateNode { // Circular singly-linked list
-    explicit RotationalStateNode(RotationalState* data) { this->data = *data; }
+	explicit RotationalStateNode(RotationalState* data) { this->data = *data; }
 
-    RotationalState data;
-    RotationalStateNode* next = nullptr;
+	RotationalState data;
+	RotationalStateNode* next = nullptr;
 
 } RotationalStateNode;
 
@@ -89,7 +89,7 @@ public:
 
 	void push(RotationalState rotationalState);
 	RotationalState getCurr() const { return this->curr->data; }
-	void cycleCurr() { this->debugNodes(); this->curr = this->curr->next;}
+	void cycleCurr() { this->debugNodes(); this->curr = this->curr->next; }
 	void debugNodes();
 	RotationalStateNode* getHead() const { return head; }
 
@@ -100,13 +100,23 @@ private:
 };
 
 
+
 class Block {
 public:
 	Block(BlockType type = T_BLOCK);
-	void rotate() { RotationalState debugCurr = this->rotationalStates.getCurr(); 
-					this->rotationalStates.cycleCurr();
-					debugCurr = this->rotationalStates.getCurr(); }
+
+	void rotate() {
+		RotationalState debugCurr = this->rotationalStates.getCurr();
+		this->rotationalStates.cycleCurr();
+		debugCurr = this->rotationalStates.getCurr();
+	}
+
 	RotationalState getCurrentState() const { return rotationalStates.getCurr(); }
+
+	BlockType getType() const { return type; }
+
+private:
+	BlockType type;
 	RotationalStateList rotationalStates;
 	BlockType getType() const { return type; }
 private:

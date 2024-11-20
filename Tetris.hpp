@@ -1,4 +1,3 @@
-#pragma once
 #include <iostream>
 #include <SDL.h>
 #include <vector>
@@ -9,7 +8,12 @@
 #include "Colors.hpp"
 #include <algorithm>
 #include <random>
+#include <queue>
+#pragma once 
 
+class BlockQueueNode;
+class BlockQueue;
+class Bag;
 
 const int GRID_WIDTH = 10;
 const int GRID_HEIGHT = 20;
@@ -50,12 +54,14 @@ private:
 
 class TetrisGrid {
 public:
-    explicit TetrisGrid(Canvas* canvas, BlockQueue* queue);
+    explicit TetrisGrid(Canvas* canvas, BlockQueue* blockQueue); // Use pointer to BlockQueue
     ~TetrisGrid();
+
     bool update();
     void render();
     void clearLines();
     void generatePiece();
+    void generateSavedPiece();
     bool rotatePiece();
     bool forceRotate();
 
@@ -78,13 +84,17 @@ public:
     bool isGameOver() const;
     bool getGridCell(int cellX, int cellY) const { return this->grid[cellY][cellX]; }
     void echoState() const;
+    void setBag(Bag* bag);
 
     int pointCount = 0;
     int lineFilled;
+    Block* currentPiece;
+    Block* nextBlock;
 
 private:
     Canvas* canvas;
-    BlockQueue* blockQueue;
+    BlockQueue* blockQueue;  // Use pointer to BlockQueue
+    Bag* bag;
     Block* currentPiece;
     int maxFrameTimer = 30;
     int frameTimer = maxFrameTimer;
