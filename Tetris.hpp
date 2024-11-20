@@ -72,6 +72,7 @@ public:
     bool isGameOver() const;
     bool getGridCell(int cellX, int cellY) const { return this->grid[cellY][cellX]; }
     void echoState() const;
+    void setBag(Bag* bag);
 
     int pointCount = 0;
     int lineFilled;

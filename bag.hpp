@@ -12,28 +12,27 @@ public:
     ~Bag();
 
     Block* holdBlock(Block* currentBlock);
-
     bool hasHeldBlock() const;
-
     Block* getHeldBlock() const;
 
     Block* getNextBlock();
-
     int getBagSize() const;
-
     void pullFromQueue(BlockQueue* blockQueue);
-
     void AddToQueue(BlockQueue& initialQueue);
 
     Block* getSavedBlock();
-
     void printSavedQueue() const;
+
+    void resetHoldStatus() { canHold = true; }
+    bool canHold = true;
+
 
 private:
     TetrisGrid* tetrisGrid;
     std::queue<Block*> SavedQueue;
     Block* heldBlock;
     bool isBlockHeld;
+
 };
 
 #endif

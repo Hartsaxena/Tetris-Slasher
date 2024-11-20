@@ -21,6 +21,7 @@ int main(int argc, char* argv[]) {
     BlockQueue blockQueue;
     TetrisGrid grid(&canvas, &blockQueue); 
     Bag bag(blockQueue, &grid);
+    grid.setBag(&bag);
     InputManager inputter = InputManager();
 
     bool isRunning = true;
@@ -56,11 +57,17 @@ int main(int argc, char* argv[]) {
 
         if (inputter.getKeyPress(SDL_SCANCODE_C)) {
             if (!storeKeyPressed) {
-                if (bag.getBagSize() < 2) {
-                    bag.pullFromQueue(&blockQueue);
-                    grid.generatePiece();
+                if (!bag.canHold) {
+                    std::cout << "Hold action already done." << std::endl;
                 }
-                storeKeyPressed = true;
+                else {
+                    if (bag.getBagSize() < 2) {
+                        bag.pullFromQueue(&blockQueue);
+                        grid.generatePiece();
+                    }
+                    storeKeyPressed = true;
+                }
+
             }
         }
         else { storeKeyPressed = false; }

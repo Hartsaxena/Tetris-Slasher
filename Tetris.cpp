@@ -10,7 +10,8 @@
 
 TetrisGrid::TetrisGrid(Canvas* canvas, BlockQueue* blockQueue) {
     this->canvas = canvas;
-    this->blockQueue = blockQueue;    
+    this->blockQueue = blockQueue;  
+    this->bag = bag;
     for (int y = 0; y < GRID_HEIGHT; y++) {
         for (int x = 0; x < GRID_WIDTH; x++) {
             grid[y][x] = 0; // 0 means empty
@@ -123,6 +124,7 @@ void TetrisGrid::placePiece() {
     }
     clearLines(); // clears full filled line on grid
     generatePiece(); // gives new piece when placed
+    bag->resetHoldStatus();
 }
 
 void TetrisGrid::clearLines() {
@@ -285,6 +287,10 @@ int TetrisGrid::pointCalculator(int lineAmount) {
     }
     lineFilled = 0;
     return pointCount;
+}
+
+void TetrisGrid::setBag(Bag* bag) {
+    this->bag = bag;
 }
 
 BlockQueue::BlockQueue() {

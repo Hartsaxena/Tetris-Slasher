@@ -63,6 +63,7 @@ void Bag::pullFromQueue(BlockQueue* blockQueue) {
 }
 
 void Bag::AddToQueue(BlockQueue& blockQueue) {
+
     if (tetrisGrid != nullptr && tetrisGrid->nextBlock != nullptr) {
         Block* currentBlock = tetrisGrid->nextBlock;
         blockQueue.enqueue(currentBlock);
@@ -74,9 +75,13 @@ void Bag::AddToQueue(BlockQueue& blockQueue) {
         SavedQueue.pop();
         blockQueue.enqueue(savedBlock);
         std::cout << "Added Saved Block to Queue: " << savedBlock->getType() << std::endl;
+        canHold = false;
+        std::cout << "Can no longer Unhold" << std::endl;
     }
 
     printSavedQueue();
+
+
 }
 
 Block* Bag::getSavedBlock() {
