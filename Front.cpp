@@ -3,6 +3,7 @@ This file contains methods that manage the SDL2 library, which is used as the fr
 */
 #include <iostream>
 #include <SDL.h>
+#include <SDL_ttf.h>
 
 #include "Front.hpp"
 
@@ -18,6 +19,8 @@ FrontendManager::FrontendManager(int screenW, int screenH, int fps, const std::s
     this->screenH = screenH;
     this->fps = fps;
     this->windowTitle = windowTitle;
+
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"); // Linear filtering
 
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) { // Initialize SDL
         std::cout << "Failed to initialize SDL.\n";
@@ -39,6 +42,9 @@ FrontendManager::FrontendManager(int screenW, int screenH, int fps, const std::s
     }
     this->renderer = SDL_CreateRenderer(this->window, -1, SDL_RENDERER_ACCELERATED);
     this->winRect = { 0, 0, screenW, screenH };
+
+    // Set up TTF and text rendering
+    TTF_Init();
 }
 
 
@@ -52,6 +58,7 @@ FrontendManager::~FrontendManager()
         SDL_DestroyWindow(this->window);
         SDL_DestroyRenderer(this->renderer);
     }
+    TTF_Quit();
     SDL_Quit();
 }
 

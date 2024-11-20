@@ -5,7 +5,7 @@ Just a list of colors that can be used in the game
 #pragma once
 
 typedef struct Color {
-    int r, g, b, alpha;
+    Uint8 r, g, b, alpha;
 } Color;
 
 

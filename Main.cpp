@@ -20,6 +20,8 @@ int main(int argc, char* argv[]) {
 	SDLConnector connector = SDLConnector(&canvas, &grid);
     bool isRunning = true;
 
+	Font loraRegular = Font("Resources\\fonts\\Lora-Regular.ttf", 30);
+
     while (isRunning) {
 
         // Handle Events and update keyboard

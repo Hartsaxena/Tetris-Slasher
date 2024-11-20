@@ -2,6 +2,7 @@
 This file contains methods that render all objects in the game. Calculations for updating positions of objects, and the like, are done in the update.c file. Game updates and rendering should be done separately.
 */
 #include <SDL.h>
+#include <SDL_ttf.h>
 #include <string>
 
 #include "Front.hpp"
@@ -21,18 +22,27 @@ bool Rectangle::snap(int maxX, int maxY) {
     return this->snap(0, 0, maxX, maxY);
 }
 
+Font::Font(const std::string& fontPath, int size) {
+    this->font = TTF_OpenFont(fontPath.c_str(), size);
+    if (this->font == NULL) {
+        std::cout << "Failed to load font: " << fontPath << std::endl;
+        std::cout << TTF_GetError() << std::endl;
+        exit(1);
+    }
+}
+
 Canvas::Canvas(SDL_Renderer* renderer)
 {
     // Constructor
     this->renderer = renderer;
-	SDL_GetRendererOutputSize(renderer, &xDimension, &yDimension);
+    SDL_GetRendererOutputSize(renderer, &xDimension, &yDimension);
 }
 
 
 void Canvas::fillScreenColor(Color color) const
 {
     // Fills the screen with a color.
-	setColor(color);
+    setColor(color);
     SDL_RenderClear(renderer);
 }
 
@@ -44,7 +54,7 @@ void Canvas::blankScreen() const
 
 void Canvas::drawRect(Rectangle* rect) const
 {
-	this->drawEmptyRect(rect);
+    this->drawEmptyRect(rect);
     SDL_RenderFillRect(renderer, &(rect->rect));
 }
 
@@ -57,62 +67,25 @@ void Canvas::drawEmptyRect(Rectangle* emptyRect) const
 
 void Canvas::drawLine(Position start, Position end, Color color) const {
     setColor(color);
-	SDL_RenderDrawLine(renderer, start.x, start.y, end.x, end.y);
+    SDL_RenderDrawLine(renderer, start.x, start.y, end.x, end.y);
 }
 
-void Canvas::renderDigit(int digit, int x, int y, int size) {
-    // Color for the numbers (white)
-    setColor(WHITE);
+void Canvas::renderText(const std::string text, Font* font, int x, int y, Color color) const {
+    // Create texture for text
+    SDL_Color colorObj = { color.r, color.g, color.b, color.alpha };
+    SDL_Surface* surface = TTF_RenderText_Solid(font->getFont(), text.c_str(), colorObj);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
 
-    // Array defining which segments of the digit are "on" (1) or "off" (0)
-    // Each digit is represented by 7 segments (like a seven-segment display)
-    const int segments[10][7] = {
-        {1, 1, 1, 0, 1, 1, 1}, // 0
-        {0, 0, 1, 0, 0, 1, 0}, // 1
-        {1, 0, 1, 1, 1, 0, 1}, // 2
-        {1, 0, 1, 1, 0, 1, 1}, // 3
-        {0, 1, 1, 1, 0, 1, 0}, // 4
-        {1, 1, 0, 1, 0, 1, 1}, // 5
-        {1, 1, 0, 1, 1, 1, 1}, // 6
-        {1, 0, 1, 0, 0, 1, 0}, // 7
-        {1, 1, 1, 1, 1, 1, 1}, // 8
-        {1, 1, 1, 1, 0, 1, 1}  // 9
-    };
+    // Set position and rectangle of text
+    int textW = 0;
+    int textH = 0;
+    SDL_QueryTexture(texture, NULL, NULL, &textW, &textH);
+    SDL_Rect dstrect = { x, y, textW, textH };
 
-    // Coordinates and sizes for the 7 segments of the digit
-    SDL_Rect segmentRect[7] = {
-        {x, y, size, 10},                   // Top
-        {x, y, 10, size},                   // Top-left
-        {x + size - 10, y, 10, size},       // Top-right
-        {x, y + size, size, 10},            // Middle
-        {x, y + size, 10, size},            // Bottom-left
-        {x + size - 10, y + size, 10, size},// Bottom-right
-        {x, y + size * 2, size, 10}         // Bottom
-    };
+    // Render text to canvas
+    SDL_RenderCopy(renderer, texture, NULL, &dstrect);
 
-    // Draw the segments that are "on" for the given digit
-    for (int i = 0; i < 7; i++) {
-        if (segments[digit][i] == 1) {
-            SDL_RenderFillRect(renderer, &segmentRect[i]);
-        }
-    }
-}
-
-void Canvas::displayInt(int number, int size) {
-
-    setColor(BLACK);
-    SDL_RenderClear(renderer);
-
-    // Convert the number to a string to break it into individual digits
-    std::string numberStr = std::to_string(number);
-
-    // Calculate the starting x position for the first digit (adjust for screen width)
-    int xPos = 800 - (numberStr.length() * (size + 10)) - 10;  // 10px padding between digits and from the right edge
-
-    // Draw each digit
-    for (char c : numberStr) {
-        int digit = c - '0';  // Convert char to corresponding int
-        renderDigit(digit, xPos, 10, size);  // 10px padding from the top edge
-        xPos += size + 10;  // Move x position for the next digit
-    }
+    // Destroy temporary objects
+    SDL_DestroyTexture(texture);
+    SDL_FreeSurface(surface);
 }
