@@ -56,11 +56,11 @@ public:
 	/**
 	 * @brief Rotates the Piece object 90 degrees clockwise.
 	 */
-	void rotate();
-	void moveUp();
-	void moveDown();
-	void moveLeft();
-	void moveRight();
+	void rotate()    { currentRotation = (currentRotation + 1) % 4; }
+	void moveUp()    { this->y--; }
+	void moveDown()  { this->y++; }
+	void moveLeft()  { this->x--; }
+	void moveRight() { this->x++; }
     RotationalState getCurrentState() const { return rotateStates[currentRotation]; }
 	/**
 	 * @brief Gets the 4 blocks with absolute positions.
@@ -218,10 +218,10 @@ namespace Rotations {
 		Block(1, 2)
 		},
 		{
-		Block(1, 0),
+		Block(0, 1),
 		Block(1, 1),
-		Block(1, 2),
-		Block(0, 1)
+		Block(2, 1),
+		Block(1, 2)
 		},
 		{
 		Block(1, 0),

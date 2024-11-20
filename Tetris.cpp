@@ -45,6 +45,16 @@ Piece PieceQueue::dequeue() {
 
 TetrisGrid::TetrisGrid() {
     this->newPiece();
+
+    // Initialize the walls of the grid.
+	for (int y = 0; y < GRID_HEIGHT; y++) {
+		this->blocks.push_back(Block(-1, y, true));
+		this->blocks.push_back(Block(GRID_WIDTH, y, true));
+	}
+    // Initialize the floor of the grid.
+    for (int x = 0; x < GRID_WIDTH; x++) {
+		this->blocks.push_back(Block(x, GRID_HEIGHT, true));
+    }
 }
 
 TetrisGrid::~TetrisGrid() {
@@ -66,7 +76,9 @@ bool TetrisGrid::moveDown() {
     this->currentPiece->moveDown();
 
     if (this->checkCollision()) {
+        this->currentPiece->moveUp(); // This will never collide
         this->newPiece();
+        this->clearLines();
         return false;
     }
 
@@ -115,10 +127,8 @@ void TetrisGrid::snapDown() {
 bool TetrisGrid::checkCollision() const {
 	// An admittedly slow way to check for collisions, but it's the most straightforward.
     // Efficiency doesn't matter too much when Tetris is so small-scale.
-    std::cout << "Started checkCollision()\n";
 	for (const Block& block : this->getPieceBlocks()) {
 		for (const Block& placedBlock : this->blocks) {
-            std::cout << "In checkCollision()\n";
 			if (block.x == placedBlock.x && block.y == placedBlock.y) {
 				return true;
 			}
@@ -126,6 +136,36 @@ bool TetrisGrid::checkCollision() const {
 	}
 
 	return false;
+}
+
+void TetrisGrid::clearLines() {
+	for (int y = 0; y < GRID_HEIGHT; y++) {
+		int count = 0;
+		for (const Block& block : this->blocks) {
+			if (block.y == y && !block.immortal) {
+				count++;
+			}
+		}
+
+		if (count == GRID_WIDTH) {
+			// Clear the line
+			for (auto it = this->blocks.begin(); it != this->blocks.end();) {
+				if (it->y == y) {
+					it = this->blocks.erase(it);
+				}
+				else {
+					it++;
+				}
+			}
+
+			// Move all blocks above the cleared line down
+			for (Block& block : this->blocks) {
+				if (block.y < y) {
+					block.y++;
+				}
+			}
+		}
+	}
 }
 
 void TetrisGrid::newPiece() {
@@ -141,7 +181,7 @@ void TetrisGrid::newPiece() {
 }
 
 void TetrisGrid::setPiece() {
-    for (const Block& block : this->currentPiece->getCurrentState().blocks) {
+    for (const Block& block : this->getPieceBlocks()) {
         this->blocks.push_back(block);
     }
 }

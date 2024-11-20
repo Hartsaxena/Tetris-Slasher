@@ -17,11 +17,11 @@ void SDLConnector::render() {
 void SDLConnector::drawGridLines() {
 	int maxX = this->grid->GRID_HEIGHT;
 	// Draw the grid lines
-	for (int i = 0; i < this->grid->GRID_WIDTH; i++) {
+	for (int i = 0; i < this->grid->GRID_WIDTH + 1; i++) {
 		// Draw vertical lines
 		this->canvas->drawLine({ i * BLOCK_SIZE, 0 }, { i * BLOCK_SIZE, this->canvas->yDimension }, GRID_COLOR);
 	}
-	for (int i = 0; i < this->grid->GRID_HEIGHT; i++) {
+	for (int i = 0; i < this->grid->GRID_HEIGHT + 1; i++) {
 		// Draw horizontal lines
 		this->canvas->drawLine({ 0, i * BLOCK_SIZE }, { this->canvas->xDimension, i * BLOCK_SIZE }, GRID_COLOR);
 	}
@@ -29,12 +29,13 @@ void SDLConnector::drawGridLines() {
 }
 void SDLConnector::drawBlocks() {
 	for (const Block& block : this->grid->getBlocks()) {
-		this->drawBlock(block, BLOCK_COLOR);
+		if (!block.immortal) this->drawBlock(block, BLOCK_COLOR);
 	}
 }
 
 void SDLConnector::drawActiveBlocks() {
 	for (const Block& block : this->grid->getPieceBlocks()) {
+
 		this->drawBlock(block, ACTIVE_BLOCK_COLOR);
 	}
 }

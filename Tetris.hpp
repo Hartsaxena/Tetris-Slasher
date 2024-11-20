@@ -18,8 +18,11 @@ public:
 
     const int GRID_WIDTH = 10;
     const int GRID_HEIGHT = 20;
-    const int NEW_PIECE_X = GRID_WIDTH / 2;
-    const int NEW_PIECE_Y = 2;
+ /*   const int NEW_PIECE_X = GRID_WIDTH / 2;
+    const int NEW_PIECE_Y = 2;*/
+
+    const int NEW_PIECE_X = 4;
+    const int NEW_PIECE_Y = 3;
 
 	/**
 	 * @brief Constructs a new TetrisGrid object.
@@ -67,7 +70,7 @@ public:
 	 * @return true if the game is over, false if it is not.
 	 */
 	bool getGameOver() const { return this->gameOver; }
-	std::vector<Block> getBlocks() const { return this->blocks; }
+    std::vector<Block> getBlocks() const { return this->blocks; }
     const Piece* getCurrentPiece() const { return this->currentPiece; }
     std::vector<Block> getPieceBlocks() const { return this->getCurrentPiece()->getAbsoluteBlocks(); }
 
@@ -78,6 +81,11 @@ private:
 
     std::vector<Block> blocks;
     Piece* currentPiece = nullptr;
+
+    /**
+     * @brief Clears all completed lines in the grid.
+     */
+    void clearLines();
 
     /**
      * @brief Sets the currently active piece onto the grid, freezing it in place. Then, generates a new

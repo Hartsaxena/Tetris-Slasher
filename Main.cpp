@@ -13,7 +13,7 @@ Driver file.
 int main(int argc, char* argv[]) {
     srand(static_cast<unsigned int>(time(0))); // Seed for random number generation
 
-    FrontendManager frontend(800, 600, 60, "Tetris Game");
+    FrontendManager frontend(1000, 1000, 60, "Tetris Game");
     Canvas canvas = Canvas(frontend.renderer);
     TetrisGrid grid = TetrisGrid();
     InputManager inputter = InputManager();
