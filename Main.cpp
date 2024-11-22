@@ -5,6 +5,10 @@ Driver file.
 #include <SDL.h>
 #include <iostream>
 #include "Front.hpp"
+#include "Render.hpp"
+#include "Colors.hpp"
+#include "Bag.hpp"
+#include "Tetris.hpp"
 #include "Blocks.hpp"
 #include "Render.hpp" 
 #include "Tetris.hpp"

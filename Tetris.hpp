@@ -1,14 +1,10 @@
 #pragma once
 
-#include <iostream>
 #include <SDL.h>
 #include <vector>
-#include <ctime>
-#include <cstdlib>
-#include <type_traits>
 #include "Blocks.hpp"
-#include "Render.hpp"
-#include "Colors.hpp"
+
+class PieceQueue;
 
 /**
  * @brief A class that represents the Tetris grid.
@@ -73,6 +69,7 @@ public:
     std::vector<Block> getBlocks() const { return this->blocks; }
     const Piece* getCurrentPiece() const { return this->currentPiece; }
     std::vector<Block> getPieceBlocks() const { return this->getCurrentPiece()->getAbsoluteBlocks(); }
+	std::vector<Block> getGhostBlocks() const { return this->ghostPiece->getAbsoluteBlocks(); }
 
 private:
     const int maxFrameTimer = 30; // Move the piece down automatically every _ frames
@@ -81,6 +78,9 @@ private:
 
     std::vector<Block> blocks;
     Piece* currentPiece = nullptr;
+    Piece* ghostPiece = nullptr;
+
+    PieceQueue* pieceQueue;
 
     /**
      * @brief Clears all completed lines in the grid.
@@ -94,7 +94,7 @@ private:
     void newPiece();
 
     /**
-     * @brief Sets the currently active piece onto the grid, freezing it in place.
+     * @brief Sets the currently active piece onto the grid.
      */
     void setPiece();
 
@@ -104,31 +104,49 @@ private:
      */
     bool checkCollision() const;
 
-    
+    /**
+     * @brief Moves the preview ghost piece down by one.
+     * @return Returns true if the piece is successfully moved down, false if the piece is unable to move down.
+     */
+    bool moveGhostDown();
+
+    /**
+     * @brief Snaps the ghost piece down to the landing position.
+     */
+    void calculateLandingPosition() { while (this->moveGhostDown()) {} }
+
+	bool checkGhostCollision() const;
 };
 
-
-typedef struct PieceQueueNode {
-    explicit PieceQueueNode(Piece val) { this->val = val; this->next = nullptr; }
-
-	Piece val;
+class PieceQueueNode {
+public:
+    explicit PieceQueueNode(Piece* val) : val(val), next(nullptr) {}
+	Piece* val;  // Pointer to Piece object
     PieceQueueNode* next;
-} PieceQueueNode;
+};
 
 class PieceQueue {
 public:
-	template<typename... Pieces>
-	explicit PieceQueue(Pieces... blockData) {
-		static_assert((std::is_same_v<Pieces, Piece> && ...), "All entries in PieceQueue must be of type Piece\n");
-		(this->enqueue(Pieces), ...);
-	}
+    PieceQueue();
     ~PieceQueue();
-    void enqueue(Piece piece);
+
+    std::vector<Piece*> peekNextPieces(int count);
+    void enqueue(Piece* val);
     Piece dequeue();
     int getLength() const { return this->length; }
+    bool isEmpty() const { return first == nullptr; }
+    void refillQueue();
+    Piece* getFirstPiece() const { return this->first->val; }
 
 private:
     PieceQueueNode* first = nullptr;
     PieceQueueNode* last = nullptr;
+
     int length = 0;
+
+    void generateBag();
+    void fillQueueFromBag();
+
+
+    std::vector<PieceType> blockBag; // Store block types for the bag
 };

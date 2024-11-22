@@ -6,6 +6,7 @@ Piece::Piece(int x, int y, PieceType type) {
 
 	this->x = x;
 	this->y = y;
+	this->type = type;
 
 	// Lambda function for copying block array to piece
 	auto setRotateStates = [this](const RotationalState(&states)[4]) {

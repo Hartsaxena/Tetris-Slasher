@@ -2,6 +2,7 @@
 
 #include <SDL.h>
 #include <SDL_ttf.h>
+#include <string>
 #include "Colors.hpp"
 
 typedef struct Rectangle {

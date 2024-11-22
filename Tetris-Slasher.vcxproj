@@ -19,15 +19,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bag.hpp" />
     <ClInclude Include="Blocks.hpp" />
     <ClInclude Include="Colors.hpp" />
     <ClInclude Include="Front.hpp" />
     <ClInclude Include="Render.hpp" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="SDLConnector.hpp" />
     <ClInclude Include="Tetris.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Bag.cpp" />
     <ClCompile Include="Blocks.cpp" />
     <ClCompile Include="Front.cpp" />
     <ClCompile Include="Main.cpp" />

@@ -68,8 +68,11 @@ public:
 	 */
 	std::vector<Block> getAbsoluteBlocks() const;
 
+	PieceType getType() const { return this->type; }
+
 private:
 	int currentRotation = 0;
+	PieceType type;
 	RotationalState rotateStates[4];
 };
 
