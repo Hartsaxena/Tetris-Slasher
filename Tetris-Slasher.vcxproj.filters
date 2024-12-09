@@ -34,28 +34,28 @@
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resources\fonts\Lora-Regular.ttf">
-      <Filter>Resources</Filter>
+      <Filter>Resources\Fonts</Filter>
     </Font>
     <Font Include="Resources\fonts\munro.ttf">
-      <Filter>Resources</Filter>
+      <Filter>Resources\Fonts</Filter>
     </Font>
     <Font Include="Resources\fonts\munro-narrow.ttf">
-      <Filter>Resources</Filter>
+      <Filter>Resources\Fonts</Filter>
     </Font>
     <Font Include="Resources\fonts\munro-small.ttf">
-      <Filter>Resources</Filter>
+      <Filter>Resources\Fonts</Filter>
     </Font>
     <Font Include="Resources\fonts\PixelForce.ttf">
-      <Filter>Resources</Filter>
+      <Filter>Resources\Fonts</Filter>
     </Font>
     <Font Include="Resources\fonts\PressStart2P.ttf">
-      <Filter>Resources</Filter>
+      <Filter>Resources\Fonts</Filter>
     </Font>
     <Font Include="Resources\fonts\slkscr.ttf">
-      <Filter>Resources</Filter>
+      <Filter>Resources\Fonts</Filter>
     </Font>
     <Font Include="Resources\fonts\slkscre.ttf">
-      <Filter>Resources</Filter>
+      <Filter>Resources\Fonts</Filter>
     </Font>
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +64,9 @@
     </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{dd6b4ac0-caf2-46c1-be05-fcaf8dd45ff4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Fonts">
+      <UniqueIdentifier>{8a4ee03f-69f5-4214-aecc-d82d5a270afb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

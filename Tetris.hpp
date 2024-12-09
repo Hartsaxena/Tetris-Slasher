@@ -3,8 +3,7 @@
 #include <SDL.h>
 #include <vector>
 #include "Blocks.hpp"
-
-class PieceQueue;
+#include "Bag.hpp"
 
 /**
  * @brief A class that represents the Tetris grid.
@@ -80,7 +79,7 @@ private:
     Piece* currentPiece = nullptr;
     Piece* ghostPiece = nullptr;
 
-    PieceQueue* pieceQueue;
+    PieceQueue pieceQueue;
 
     /**
      * @brief Clears all completed lines in the grid.
@@ -116,37 +115,4 @@ private:
     void calculateLandingPosition() { while (this->moveGhostDown()) {} }
 
 	bool checkGhostCollision() const;
-};
-
-class PieceQueueNode {
-public:
-    explicit PieceQueueNode(Piece* val) : val(val), next(nullptr) {}
-	Piece* val;  // Pointer to Piece object
-    PieceQueueNode* next;
-};
-
-class PieceQueue {
-public:
-    PieceQueue();
-    ~PieceQueue();
-
-    std::vector<Piece*> peekNextPieces(int count);
-    void enqueue(Piece* val);
-    Piece dequeue();
-    int getLength() const { return this->length; }
-    bool isEmpty() const { return first == nullptr; }
-    void refillQueue();
-    Piece* getFirstPiece() const { return this->first->val; }
-
-private:
-    PieceQueueNode* first = nullptr;
-    PieceQueueNode* last = nullptr;
-
-    int length = 0;
-
-    void generateBag();
-    void fillQueueFromBag();
-
-
-    std::vector<PieceType> blockBag; // Store block types for the bag
 };

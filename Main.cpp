@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
 
     FrontendManager frontend(1000, 1000, 60, "Tetris Game");
     Canvas canvas = Canvas(frontend.renderer);
-    TetrisGrid grid = TetrisGrid();
+    TetrisGrid grid;
     InputManager inputter = InputManager();
 	SDLConnector connector = SDLConnector(&canvas, &grid);
     bool isRunning = true;
@@ -27,7 +27,6 @@ int main(int argc, char* argv[]) {
 	Font loraRegular = Font("Resources\\fonts\\Lora-Regular.ttf", 30);
 
     while (isRunning) {
-
         // Handle Events and update keyboard
         isRunning = inputter.HandleInputs();
 
@@ -57,6 +56,9 @@ int main(int argc, char* argv[]) {
         connector.clear();
         connector.render();
         frontend.PresentRenderer();
+        if (grid.getGameOver()) {
+            std::cout << "you'll never see it comingggg\n";
+        }
         grid.update();
         if (grid.getGameOver()) {
             std::cout << "Game Over\n";

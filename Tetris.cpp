@@ -5,6 +5,7 @@
 
 
 TetrisGrid::TetrisGrid() {
+    //this->pieceQueue = PieceQueue();
     this->newPiece();
 
     // Initialize the walls of the grid.
@@ -14,12 +15,13 @@ TetrisGrid::TetrisGrid() {
 	}
     // Initialize the floor of the grid.
     for (int x = 0; x < GRID_WIDTH; x++) {
-		this->blocks.push_back(Block(x, GRID_HEIGHT, true));
+        this->blocks.push_back(Block(x, GRID_HEIGHT, true));
     }
 }
 
 TetrisGrid::~TetrisGrid() {
     delete currentPiece; // Clean up the current piece
+    delete ghostPiece;
 }
 
 void TetrisGrid::newPiece() {
@@ -28,12 +30,12 @@ void TetrisGrid::newPiece() {
         delete this->currentPiece;
     }
 
-    if (this->pieceQueue->getLength() == 3) {
-        std::cout << "Queue is empty! Regenerating..." << std::endl;
-        pieceQueue->refillQueue();
+    if (this->pieceQueue.getLength() == 3) {
+        std::cout << "Queue is nearly empty! Regenerating..." << std::endl;
+        pieceQueue.refillQueue();
     }
 
-    *currentPiece = pieceQueue->dequeue();
+    *(this->currentPiece) = pieceQueue.dequeue();
 
     if (checkCollision()) {
         gameOver = true;
@@ -176,104 +178,4 @@ bool TetrisGrid::checkGhostCollision() const {
     }
 
     return false;
-}
-
-PieceQueue::PieceQueue() {
-    std::cout << "CREATING A NEW BLOCKQ" << std::endl;
-    generateBag();
-    fillQueueFromBag();
-}
-
-PieceQueue::~PieceQueue() {
-    PieceQueueNode* curr = first;
-    while (curr != nullptr) {
-        PieceQueueNode* last = curr;
-        curr = curr->next;
-        delete last->val; // Delete the Block gaming
-        delete last;
-    }
-
-}
-
-void PieceQueue::enqueue(Piece* val) {
-    PieceQueueNode* newFirst = new PieceQueueNode(val);
-
-    newFirst->next = first;
-
-    first = newFirst;
-
-    if (last == nullptr) {
-        last = newFirst;
-    }
-
-    length++;
-}
-
-Piece PieceQueue::dequeue() {
-    if (this->first == nullptr) {
-        std::cout << "Queue is empty, generating new blocks...\n";
-        refillQueue();
-    }
-
-    Piece val = *this->first->val;
-    PieceQueueNode* temp = this->first;
-    this->first = this->first->next;
-    delete temp;
-    this->length--;
-
-    std::cout << "Dequeuing block: " << val.getType() << "\n";
-
-    std::cout << "Current BlockQueue state: ";
-    PieceQueueNode* current = this->first;
-    while (current != nullptr) {
-        std::cout << current->val->getType() << " ";
-        current = current->next;
-    }
-    std::cout << std::endl;
-
-    return val;
-}
-
-
-void PieceQueue::generateBag() { // generate the bazg w/ 14 pieces
-    blockBag = {
-        I_PIECE, I_PIECE,
-        O_PIECE, O_PIECE,
-        S_PIECE, S_PIECE,
-        Z_PIECE, Z_PIECE,
-        L_PIECE, L_PIECE,
-        T_PIECE, T_PIECE,
-        J_PIECE, J_PIECE
-    };
-
-    // Shuffle the bag
-    std::shuffle(blockBag.begin(), blockBag.end(), std::mt19937(std::random_device()()));
-}
-
-void PieceQueue::fillQueueFromBag() {
-    for (PieceType type : blockBag) {
-		Piece* newBlock = new Piece(0, 0, type);
-        enqueue(newBlock);
-    }
-}
-
-
-void PieceQueue::refillQueue() {
-    generateBag();
-    fillQueueFromBag();
-}
-
-std::vector<Piece*> PieceQueue::peekNextPieces(int count) {
-    std::vector<Piece*> nextPieces;
-    PieceQueueNode* current = first;
-    int i = 0;
-
-    // Collect the next `count` pieces or fewer if the queue is shorter
-    while (current != nullptr && i < count) {
-        nextPieces.push_back(current->val);
-        current = current->next;
-        i++;
-    }
-
-    return nextPieces;
 }

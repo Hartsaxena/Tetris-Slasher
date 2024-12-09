@@ -1,5 +1,5 @@
 #pragma once
-
+#include <iostream>
 typedef enum PieceType {
 	I_PIECE,
 	O_PIECE,
@@ -56,11 +56,17 @@ public:
 	/**
 	 * @brief Rotates the Piece object 90 degrees clockwise.
 	 */
-	void rotate()    { currentRotation = (currentRotation + 1) % 4; }
-	void moveUp()    { this->y--; }
-	void moveDown()  { this->y++; }
-	void moveLeft()  { this->x--; }
-	void moveRight() { this->x++; }
+	void rotate() {
+		this->currentRotation = (this->currentRotation + 1) % 4;
+		std::cout << "NEW ROTATION IS " << this->currentRotation << std::endl;
+	}
+	void moveUp()    { y--; }
+	void moveDown()  { y++; }
+	void moveLeft()  { x--; }
+	void moveRight() { x++; }
+
+	/********* ACCESSOR METHODS **********/
+
     RotationalState getCurrentState() const { return rotateStates[currentRotation]; }
 	/**
 	 * @brief Gets the 4 blocks with absolute positions.

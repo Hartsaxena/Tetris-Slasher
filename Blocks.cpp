@@ -1,13 +1,12 @@
 #include <vector>
 #include "Blocks.hpp"
 
-
 Piece::Piece(int x, int y, PieceType type) {
 
 	this->x = x;
 	this->y = y;
 	this->type = type;
-
+	
 	// Lambda function for copying block array to piece
 	auto setRotateStates = [this](const RotationalState(&states)[4]) {
 		for (int i = 0; i < 4; ++i) {
@@ -52,7 +51,7 @@ Piece::Piece(int x, int y, PieceType type) {
 
 std::vector<Block> Piece::getAbsoluteBlocks() const {
 	std::vector<Block> absoluteBlocks;
-	for (const Block& block : this->rotateStates[currentRotation].blocks) {
+	for (const Block& block : this->getCurrentState().blocks) {
 		absoluteBlocks.push_back(Block(block.x + this->x, block.y + this->y));
 	}
 
