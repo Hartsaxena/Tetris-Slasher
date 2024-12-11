@@ -22,7 +22,7 @@ public:
 	/**
 	 * @brief Constructs a new TetrisGrid object.
 	 */
-	explicit TetrisGrid();
+	TetrisGrid();
 	~TetrisGrid();
 
     /********* MOVEMENT CODE **********/

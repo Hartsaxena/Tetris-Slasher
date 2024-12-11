@@ -48,6 +48,7 @@ PieceQueue::PieceQueue() {
     std::cout << "Creating new PieceQueue..." << std::endl;
     generateBag();
     fillQueueFromBag();
+    std::cout << "You'll never see it comingggg...\n";
 }
 
 PieceQueue::~PieceQueue() {

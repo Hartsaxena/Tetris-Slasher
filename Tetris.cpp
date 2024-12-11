@@ -35,7 +35,8 @@ void TetrisGrid::newPiece() {
         pieceQueue.refillQueue();
     }
 
-    *(this->currentPiece) = pieceQueue.dequeue();
+    Piece piece = pieceQueue.dequeue();
+    this->currentPiece = new Piece(piece);
 
     if (checkCollision()) {
         gameOver = true;
