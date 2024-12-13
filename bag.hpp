@@ -7,30 +7,32 @@
 
 class Bag {
 public:
-    // Constructor
-    Bag();
 
-    // Hold the current block and return the previously held block
+    Bag(BlockQueue& blockQueue, TetrisGrid* tetrisGrid);
+    ~Bag();
+
     Block* holdBlock(Block* currentBlock);
-
-    // Check if there is a block currently held
     bool hasHeldBlock() const;
-
-    // Retrieve the currently held block
     Block* getHeldBlock() const;
 
-    // Get the next block from the queue
     Block* getNextBlock();
-
-    // pull a Block from the initial Queue to store
-    void pullFromQueue(BlockQueue& blockQueue);
-
+    int getBagSize() const;
+    void pullFromQueue(BlockQueue* blockQueue);
     void AddToQueue(BlockQueue& initialQueue);
 
+    Block* getSavedBlock();
+    void printSavedQueue() const;
+
+    void resetHoldStatus() { canHold = true; }
+    bool canHold = true;
+
+
 private:
+    TetrisGrid* tetrisGrid;
     std::queue<Block*> SavedQueue;
     Block* heldBlock;
     bool isBlockHeld;
+
 };
 
 #endif

@@ -4,13 +4,14 @@
 #include "Front.hpp"
 #include "Render.hpp"
 #include "Colors.hpp"
+#include "Bag.hpp"
 
 
 
-
-TetrisGrid::TetrisGrid(Canvas* canvas) {
+TetrisGrid::TetrisGrid(Canvas* canvas, BlockQueue* blockQueue) {
     this->canvas = canvas;
-    // Initialize the grid to 0 (empty)
+    this->blockQueue = blockQueue;
+    this->bag = bag;
     for (int y = 0; y < GRID_HEIGHT; y++) {
         for (int x = 0; x < GRID_WIDTH; x++) {
             grid[y][x] = 0; // 0 means empty
@@ -24,12 +25,20 @@ TetrisGrid::~TetrisGrid() {
 }
 
 void TetrisGrid::generatePiece() {
-    int randomBlockType = rand() % 7; // Randomly select a block type
-    currentPiece = new Block(static_cast<BlockType>(randomBlockType));
+    if (blockQueue->isEmpty()) {
+        std::cout << "Queue is empty! Regenerating..." << std::endl;
+        blockQueue->refillQueue();
+    }
 
-    piecePosition = { 4, 0 }; // top of piece grid
+    nextBlock = blockQueue->getFirstBlock();
+
+    currentPiece = blockQueue->dequeue();
+
+    std::cout << "Generated Next Piece: " << nextBlock->getType() << std::endl;
+
+    piecePosition = { 4, 0 };  // Reset position
     if (checkCollision()) {
-        gameOver = true; // Game over if the new piece cannot be placed
+        gameOver = true;
     }
 }
 
@@ -113,6 +122,7 @@ void TetrisGrid::placePiece() {
     }
     clearLines(); // clears full filled line on grid
     generatePiece(); // gives new piece when placed
+    bag->resetHoldStatus();
 }
 
 void TetrisGrid::clearLines() {
@@ -277,7 +287,12 @@ int TetrisGrid::pointCalculator(int lineAmount) {
     return pointCount;
 }
 
+void TetrisGrid::setBag(Bag* bag) {
+    this->bag = bag;
+}
+
 BlockQueue::BlockQueue() {
+    std::cout << "CREATING A NEW BLOCKQ" << std::endl;
     generateBag();
     fillQueueFromBag();
 }
@@ -317,6 +332,17 @@ Block* BlockQueue::dequeue() {
     this->first = this->first->next;
     delete temp;
     this->length--;
+
+    std::cout << "Dequeuing block: " << val->getType() << "\n";
+
+    std::cout << "Current BlockQueue state: ";
+    BlockQueueNode* current = this->first;
+    while (current != nullptr) {
+        std::cout << current->val->getType() << " ";
+        current = current->next;
+    }
+    std::cout << std::endl;
+
     return val;
 }
 
@@ -342,7 +368,21 @@ void BlockQueue::fillQueueFromBag() {
     }
 }
 
+
 void BlockQueue::refillQueue() {
-    generateBag();
-    fillQueueFromBag();
+    if (length == 0) {
+        generateBag();
+        fillQueueFromBag();
+    }
+}
+
+bool BlockQueue::isEmpty() const {
+    return length == 0;
+}
+
+Block* BlockQueue::getFirstBlock() const {
+    if (first != nullptr) {
+        return first->val;  // Return the first block
+    }
+    return nullptr;
 }

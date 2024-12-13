@@ -18,11 +18,16 @@ int main(int argc, char* argv[]) {
 
     FrontendManager frontend(800, 600, 60, "Tetris Game");
     Canvas canvas = Canvas(frontend.renderer);
-    TetrisGrid grid(&canvas);
-    InputManager inputter = InputManager();
-    bool isRunning = true;
-    Bag bag;
     BlockQueue blockQueue;
+    TetrisGrid grid(&canvas, &blockQueue);
+    Bag bag(blockQueue, &grid);
+    grid.setBag(&bag);
+    InputManager inputter = InputManager();
+
+    bool isRunning = true;
+    bool storeKeyPressed = false;
+    bool unstoreKeyPressed = false;
+    
 
 
     while (isRunning) {
@@ -50,6 +55,33 @@ int main(int argc, char* argv[]) {
             std::cout << "SPACE pressed. Snap downwards.\n";
             grid.instantDown();
         }
+        if (inputter.getKeyPress(SDL_SCANCODE_C)) {
+            if (!storeKeyPressed) {
+                if (!bag.canHold) {
+                    std::cout << "Hold action already done." << std::endl;
+                }
+                else {
+                    if (bag.getBagSize() < 2) {
+                        bag.pullFromQueue(&blockQueue);
+                        grid.generatePiece();
+                    }
+                    storeKeyPressed = true;
+                }
+
+            }
+        }
+        else { storeKeyPressed = false; }
+
+        if (inputter.getKeyPress(SDL_SCANCODE_V)) {
+            if (!unstoreKeyPressed) {
+                if (bag.getBagSize() > 0) {
+                    bag.AddToQueue(blockQueue);     
+                    grid.generatePiece();
+                }
+                unstoreKeyPressed = true;
+            }
+        }
+        else { unstoreKeyPressed = false; }
 
         
         canvas.displayInt(grid.pointCount, 30);

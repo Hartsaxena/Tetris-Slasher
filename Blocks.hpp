@@ -107,4 +107,7 @@ public:
 					debugCurr = this->rotationalStates.getCurr(); }
 	RotationalState getCurrentState() const { return rotationalStates.getCurr(); }
 	RotationalStateList rotationalStates;
+	BlockType getType() const { return type; }
+private:
+	BlockType type;
 };
