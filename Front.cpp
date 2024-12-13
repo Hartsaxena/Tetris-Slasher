@@ -23,8 +23,7 @@ FrontendManager::FrontendManager(int screenW, int screenH, int fps, const std::s
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"); // Linear filtering
 
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) { // Initialize SDL
-        std::cout << "Failed to initialize SDL.\n";
-        std::cout << SDL_GetError();
+        std::cerr << "Failed to initialize SDL: " << SDL_GetError() << std::endl;
         SDL_Quit();
         exit(1);
     }
@@ -35,16 +34,27 @@ FrontendManager::FrontendManager(int screenW, int screenH, int fps, const std::s
         screenW, screenH,
         SDL_WINDOW_SHOWN);
     if (this->window == NULL) {
-        std::cout << "FATAL ERROR: Window could not be displayed.\n";
-        std::cout << SDL_GetError();
+        std::cerr << "FATAL ERROR: Window could not be displayed: " << SDL_GetError() << std::endl;
         SDL_Quit();
         exit(1); // Quit the program
     }
     this->renderer = SDL_CreateRenderer(this->window, -1, SDL_RENDERER_ACCELERATED);
+    if (this->renderer == NULL) {
+        std::cerr << "FATAL ERROR: Renderer could not be created: " << SDL_GetError() << std::endl;
+        SDL_DestroyWindow(this->window);
+        SDL_Quit();
+        exit(1); // Quit the program
+    }
     this->winRect = { 0, 0, screenW, screenH };
 
     // Set up TTF and text rendering
-    TTF_Init();
+    if (TTF_Init() != 0) {
+        std::cerr << "Failed to initialize SDL_ttf: " << TTF_GetError() << std::endl;
+        SDL_DestroyRenderer(this->renderer);
+        SDL_DestroyWindow(this->window);
+        SDL_Quit();
+        exit(1);
+    }
 }
 
 
@@ -134,7 +144,7 @@ bool InputManager::HandleInputs()
             break;
         }
 
-                      // Mouse movement / presses
+        // Mouse movement / presses
         case SDL_MOUSEBUTTONDOWN: {
             this->mouseState->ButtonStates[inputEvent->button.button] = true;
             break;
@@ -149,7 +159,7 @@ bool InputManager::HandleInputs()
             break;
         }
 
-                            // Exiting game
+        // Exiting game
         case SDL_QUIT: {
             IsRunning = false;
             break;

@@ -5,8 +5,8 @@
 #include <string>
 #include "Colors.hpp"
 
+
 typedef struct Rectangle {
-    /* Rectangle structure */
     SDL_Rect rect;
     Color color;
     int& x = rect.x;
@@ -14,9 +14,23 @@ typedef struct Rectangle {
     int& w = rect.w;
     int& h = rect.h;
 
+    Rectangle() : rect({0, 0, 0, 0}), color({0, 0, 0, 0}), x(rect.x), y(rect.y), w(rect.w), h(rect.h) {}
+    Rectangle(SDL_Rect r, Color c) : rect(r), color(c), x(rect.x), y(rect.y), w(rect.w), h(rect.h) {}
+    Rectangle(int x, int y, int w, int h, Color c) : rect({x, y, w, h}), color(c), x(rect.x), y(rect.y), w(rect.w), h(rect.h) {}
+
+    Rectangle& operator=(const Rectangle& other) {
+        if (this != &other) {
+            this->rect = other.rect;
+            this->color = other.color;
+            // References are already bound to rect members, no need to rebind
+        }
+        return *this;
+    }
+
     bool snap(int minX, int minY, int maxX, int maxY);
     bool snap(int maxX, int maxY);
 } Rectangle;
+#define Rect Rectangle // Alias for Rectangle
 
 typedef struct Position {
     int x;
@@ -119,6 +133,15 @@ public:
      * @param color Color object representing the color of the text.
      */
     void renderText(const std::string text, Font* font, int x, int y, Color color) const;
+    /**
+     * @brief Presents text to the screen.
+     * @param text Text to be rendered.
+     * @param font Font object to use for rendering the text.
+     * @param x X-coordinate of the text's center
+     * @param y Y-coordinate of the text's center
+     * @param color Color object representing the color of the text.
+     */
+    void renderTextCenter(const std::string text, Font* font, int x, int y, Color color) const;
 
 
     /********* RENDERING IMAGES AND SURFACES **********/

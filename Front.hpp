@@ -26,6 +26,10 @@ public:
     bool getKeyState(SDL_Scancode keycode) const { return this->inputKeyStates[keycode]; }
     bool getKeyPress(SDL_Scancode keycode) const { return (std::count(this->inputKeyPresses.begin(), this->inputKeyPresses.end(), keycode) != 0); }
 
+	bool getMouseKeyState(int button) const { return this->mouseState->ButtonStates[button]; }
+	int getMouseX() const { return this->mouseState->x; }
+	int getMouseY() const { return this->mouseState->y; }
+
 private:
     MouseState* mouseState;
     SDL_Event* inputEvent;

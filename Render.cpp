@@ -74,13 +74,56 @@ void Canvas::renderText(const std::string text, Font* font, int x, int y, Color 
     // Create texture for text
     SDL_Color colorObj = { color.r, color.g, color.b, color.alpha };
     SDL_Surface* surface = TTF_RenderText_Solid(font->getFont(), text.c_str(), colorObj);
+    if (!surface) {
+        std::cerr << "Failed to create text surface: " << TTF_GetError() << std::endl;
+        return;
+    }
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+    if (!texture) {
+        std::cerr << "Failed to create text texture: " << SDL_GetError() << std::endl;
+        SDL_FreeSurface(surface);
+        return;
+    }
 
     // Set position and rectangle of text
     int textW = 0;
     int textH = 0;
     SDL_QueryTexture(texture, NULL, NULL, &textW, &textH);
     SDL_Rect dstrect = { x, y, textW, textH };
+
+    // Render text to canvas
+    SDL_RenderCopy(renderer, texture, NULL, &dstrect);
+
+    // Destroy temporary objects
+    SDL_DestroyTexture(texture);
+    SDL_FreeSurface(surface);
+}
+
+void Canvas::renderTextCenter(const std::string text, Font* font, int x, int y, Color color) const {
+    // Create texture for text
+    if (font == nullptr || font->getFont() == nullptr) {
+        std::cerr << "Font is null pointer\n";
+        return;
+    }
+
+    SDL_Color colorObj = { color.r, color.g, color.b, color.alpha };
+    SDL_Surface* surface = TTF_RenderText_Solid(font->getFont(), text.c_str(), colorObj);
+    if (!surface) {
+        std::cerr << "Failed to create text surface: " << TTF_GetError() << std::endl;
+        return;
+    }
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+    if (!texture) {
+        std::cerr << "Failed to create text texture: " << SDL_GetError() << std::endl;
+        SDL_FreeSurface(surface);
+        return;
+    }
+
+    // Set position and rectangle of text
+    int textW = 0;
+    int textH = 0;
+    SDL_QueryTexture(texture, NULL, NULL, &textW, &textH);
+    SDL_Rect dstrect = { x - textW / 2, y - textH / 2, textW, textH };
 
     // Render text to canvas
     SDL_RenderCopy(renderer, texture, NULL, &dstrect);

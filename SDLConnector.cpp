@@ -1,17 +1,39 @@
 #include "SDL.h"
 #include "SDLConnector.hpp"
 #include "Tetris.hpp"
+#include "Colors.hpp"
+#include "Render.hpp"
 
 
 void SDLConnector::clear() {
 	this->canvas->blankScreen();
 }
 
-void SDLConnector::render() {
+void SDLConnector::render(bool menuMode) {
 	this->clear();
+	if (menuMode) {
+		this->renderMainMenu();
+	}
+	else {
+		this->renderGame();
+	}
+}
+
+void SDLConnector::renderMainMenu() {
+	this->drawButton(this->menu->getTitle(), "Tetritis", *this->font, WHITE);
+	this->drawButton(this->menu->getStartButton(), "Start", *this->font, WHITE);
+	this->drawButton(this->menu->getExitButton(), "Exit", *this->font, WHITE);
+}
+
+void SDLConnector::renderGame() {
 	this->drawGridLines();
 	this->drawBlocks();
 	this->drawActiveBlocks();
+}
+
+void SDLConnector::drawButton(Rectangle rect, std::string text, Font& font, Color textColor) {
+	this->canvas->drawRect(&rect);
+	this->canvas->renderTextCenter(text, &font, rect.x, rect.y, textColor);
 }
 
 void SDLConnector::drawGridLines() {

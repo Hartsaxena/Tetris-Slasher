@@ -9,6 +9,9 @@ typedef struct Color {
 } Color;
 
 
+const Color TRANSPARENT = { 0, 0, 0, 0 };
+#define CLEAR TRANSPARENT
+
 const Color BLACK = { 0, 0, 0, 255 };
 const Color WHITE = { 255, 255, 255, 255 };
 const Color GRAY = { 150, 150, 150, 255 };

@@ -8,6 +8,7 @@
     <ClCompile Include="Render.cpp" />
     <ClCompile Include="SDLConnector.cpp" />
     <ClCompile Include="Tetris.cpp" />
+    <ClCompile Include="Menu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bag.hpp">
@@ -29,6 +30,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Tetris.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Menu.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

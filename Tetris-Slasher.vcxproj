@@ -23,6 +23,7 @@
     <ClInclude Include="Blocks.hpp" />
     <ClInclude Include="Colors.hpp" />
     <ClInclude Include="Front.hpp" />
+    <ClInclude Include="Menu.hpp" />
     <ClInclude Include="Render.hpp" />
     <ClInclude Include="SDLConnector.hpp" />
     <ClInclude Include="Tetris.hpp" />
@@ -32,6 +33,7 @@
     <ClCompile Include="Blocks.cpp" />
     <ClCompile Include="Front.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Render.cpp" />
     <ClCompile Include="SDLConnector.cpp" />
     <ClCompile Include="Tetris.cpp" />
