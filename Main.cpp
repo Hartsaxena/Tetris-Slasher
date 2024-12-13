@@ -12,8 +12,29 @@ Driver file.
 #include "Blocks.hpp"
 #include "Render.hpp" 
 #include "Tetris.hpp"
+#include <SDL_mixer.h>
 
 int main(int argc, char* argv[]) {
+    if (SDL_Init(SDL_INIT_AUDIO) < 0) {
+        std::cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
+        return 1;
+    }
+
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        std::cerr << "SDL_mixer could not initialize! Mix_Error: " << Mix_GetError() << std::endl;
+        return 1;
+    }
+
+    Mix_Music* bgMusic = Mix_LoadMUS("C:\\GLP\\Tetris\\Resources\\Anamanaguchi - Miku (Instrumental).mp3");
+    if (!bgMusic) {
+        std::cerr << "Failed to load music! Mix_Error: " << Mix_GetError() << std::endl;
+        return 1;
+    }
+
+    if (Mix_PlayMusic(bgMusic, -1) == -1) { 
+        std::cerr << "Failed to play music! Mix_Error: " << Mix_GetError() << std::endl;
+        return 1;
+    }
     srand(static_cast<unsigned int>(time(0))); // Seed for random number generation
 
     FrontendManager frontend(800, 600, 60, "Tetris Game");
@@ -94,5 +115,8 @@ int main(int argc, char* argv[]) {
         }
         frontend.PauseDelay();
     }
+    Mix_FreeMusic(bgMusic); // Free the music
+    Mix_CloseAudio();
+    SDL_Quit();
     return 0;
 }

@@ -91,4 +91,9 @@
       <Filter>Resource Files\fonts</Filter>
     </Font>
   </ItemGroup>
+  <ItemGroup>
+    <Media Include="Debug\Anamanaguchi - Miku (Instrumental).mp3">
+      <Filter>Resource Files</Filter>
+    </Media>
+  </ItemGroup>
 </Project>
